@@ -1,8 +1,8 @@
 import 'dart:html';
 import 'package:flutter/material.dart';
 import '../main.dart';
-class NavigationDrawer extends StatelessWidget {
-  const NavigationDrawer({super.key});
+import '../screens/landing_page.dart';
+class SideMenuBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
