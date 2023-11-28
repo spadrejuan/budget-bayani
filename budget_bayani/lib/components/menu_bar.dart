@@ -1,8 +1,8 @@
 import 'dart:html';
 import 'package:flutter/material.dart';
 import '../main.dart';
-class NavigationDrawer extends StatelessWidget {
-  const NavigationDrawer({super.key});
+import '../screens/landing_page.dart';
+class SideMenuBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -27,7 +27,7 @@ class NavigationDrawer extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const LandingPage(),
+                builder: (context) => LandingPage(),
               ));
             }
           ),
@@ -43,7 +43,7 @@ class NavigationDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pop(context);
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const LandingPage(),
+                builder: (context) => LandingPage(),
               ));
             }
           ),
@@ -52,7 +52,7 @@ class NavigationDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => const LandingPage(),
+                  builder: (context) => LandingPage(),
                 ));
               }
           ),
@@ -61,7 +61,7 @@ class NavigationDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => const LandingPage(),
+                  builder: (context) => LandingPage(),
                 ));
               }
           ),
