@@ -4,18 +4,19 @@ enum DashboardViews{
   income,
   expenses
 }
-
 class LandingPage extends StatefulWidget {
   @override
   State<LandingPage> createState() => _LandingPageState();
 }
-
 class _LandingPageState extends State<LandingPage> {
   late DashboardViews selectedDashboardView;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: SideMenuBar(),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+      ),
     );
   }
 }

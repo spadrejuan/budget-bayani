@@ -1,4 +1,4 @@
-import 'dart:html';
+import 'package:budget_bayani/screens/financial_goals.dart';
 import 'package:flutter/material.dart';
 import '../main.dart';
 import '../screens/landing_page.dart';
@@ -22,8 +22,8 @@ class SideMenuBar extends StatelessWidget {
         top: MediaQuery.of(context).padding.top,
       ),
       child: IconButton(
-            icon: Image.asset('path/the_image.png'),
-            iconSize: 50,
+            icon: Image.asset('assets/images/logo.png'),
+            iconSize: 200,
             onPressed: () {
               Navigator.pop(context);
               Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -43,7 +43,7 @@ class SideMenuBar extends StatelessWidget {
             onTap: () {
               Navigator.pop(context);
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => LandingPage(),
+                builder: (context) => FinancialGoals(),
               ));
             }
           ),
