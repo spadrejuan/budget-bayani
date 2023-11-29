@@ -1,7 +1,10 @@
+import 'package:budget_bayani/screens/cash_flow_tracking_page.dart';
 import 'package:budget_bayani/screens/financial_goals.dart';
+//import 'dart:html';
 import 'package:flutter/material.dart';
 import '../main.dart';
 import '../screens/landing_page.dart';
+
 class SideMenuBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -27,7 +30,7 @@ class SideMenuBar extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => LandingPage(),
+                builder: (context) => const MyApp(),
               ));
             }
           ),
@@ -52,7 +55,7 @@ class SideMenuBar extends StatelessWidget {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => LandingPage(),
+                  builder: (context) => CashFlowPage(),
                 ));
               }
           ),
@@ -61,7 +64,7 @@ class SideMenuBar extends StatelessWidget {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => LandingPage(),
+                  builder: (context) => const MyApp(),
                 ));
               }
           ),
