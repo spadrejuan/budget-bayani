@@ -1,4 +1,7 @@
 import 'package:budget_bayani/screens/cash_flow_tracking_page.dart';
+import 'package:budget_bayani/components/menu_bar.dart';
+import 'package:budget_bayani/screens/landing_page.dart';
+//import 'package:budget_bayani/screens/landing_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,11 +13,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: LandingPage(),
       theme: ThemeData.dark().copyWith(
-      primaryColor: const Color(0xFF0A0E21),
-      scaffoldBackgroundColor: const Color(0xFF0A0E21),
-      )
+        primaryColor: Color(0xFF0A0E21),
+        scaffoldBackgroundColor: Color(0xFF0A0E21),
+      ),
+      // home: LandingPage(),
+      // theme: ThemeData.dark().copyWith(
+      // primaryColor: const Color(0xFF0A0E21),
+      // scaffoldBackgroundColor: const Color(0xFF0A0E21),
+      // )
     );
   }
 }
@@ -38,7 +45,9 @@ class LandingPage extends StatelessWidget {
           },
           child: Text('Cash Flow Logs'),
         ),
+
       ),
+
     );
   }
 }

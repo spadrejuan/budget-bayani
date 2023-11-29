@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 
 //TODO Change back to menu bar
 //Di ko alam if kailangan palitan yung process ng pagchange ng page
-class CashFlowPage extends StatelessWidget {
+class CashFlowPage extends StatefulWidget {
+  @override
+  State<CashFlowPage> createState() => _CashFlowPage();
+}
+class _CashFlowPage extends State<CashFlowPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +28,10 @@ class CashFlowPage extends StatelessWidget {
       backgroundColor: AppColors.BGColor,
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-          //Add functionlity here
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CashFlowPage()),
+          );
         },
         child: Icon(Icons.add),
         backgroundColor: AppColors.AddButtonColor,
