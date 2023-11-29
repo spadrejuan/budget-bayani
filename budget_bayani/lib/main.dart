@@ -1,20 +1,18 @@
+import 'package:budget_bayani/components/menu_bar.dart';
+import 'package:budget_bayani/screens/landing_page.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const LandingPage());
-}
+void main() => runApp(BudgetBayani());
 
-class LandingPage extends StatelessWidget {
-  const LandingPage({super.key});
+class BudgetBayani extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        drawer: NavigationDrawer(children: [],),
-        body: Center(
-          child: Text('Hello World!'),
-        ),
+    return MaterialApp(
+      theme: ThemeData.dark().copyWith(
+        primaryColor: Color(0xFF0A0E21),
+        scaffoldBackgroundColor: Color(0xFF0A0E21),
       ),
+      home: LandingPage(),
     );
   }
 }

@@ -1,8 +1,8 @@
-import 'dart:html';
+import 'package:budget_bayani/screens/financial_goals.dart';
 import 'package:flutter/material.dart';
 import '../main.dart';
-class NavigationDrawer extends StatelessWidget {
-  const NavigationDrawer({super.key});
+import '../screens/landing_page.dart';
+class SideMenuBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -22,12 +22,12 @@ class NavigationDrawer extends StatelessWidget {
         top: MediaQuery.of(context).padding.top,
       ),
       child: IconButton(
-            icon: Image.asset('path/the_image.png'),
-            iconSize: 50,
+            icon: Image.asset('assets/images/logo.png'),
+            iconSize: 200,
             onPressed: () {
               Navigator.pop(context);
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const LandingPage(),
+                builder: (context) => LandingPage(),
               ));
             }
           ),
@@ -43,7 +43,7 @@ class NavigationDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pop(context);
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const LandingPage(),
+                builder: (context) => FinancialGoals(),
               ));
             }
           ),
@@ -52,7 +52,7 @@ class NavigationDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => const LandingPage(),
+                  builder: (context) => LandingPage(),
                 ));
               }
           ),
@@ -61,7 +61,7 @@ class NavigationDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => const LandingPage(),
+                  builder: (context) => LandingPage(),
                 ));
               }
           ),
