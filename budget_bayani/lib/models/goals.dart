@@ -1,36 +1,38 @@
 import 'db_objects.dart';
 // Inheritance, Encapsulation
 class Goal extends dbObject{
-  int _goalId;
+ // int _goalId;
   String _goalName;
-  DateTime _goalStart;
-  DateTime _goalEnd;
+  String _goalStart;
+  String _goalEnd;
   double _goalAmount;
+  String _incomeCategory;
   Goal({
-    required int goalId,
+  //  required int goalId,
     required String goalName,
-    required DateTime goalStart,
-    required DateTime goalEnd,
+    required String goalStart,
+    required String goalEnd,
     required double goalAmount,
-  }): _goalId = goalId, _goalName = goalName, _goalStart = goalStart, _goalEnd = goalEnd, _goalAmount = goalAmount;
-
-  int get goalId => _goalId!;
-  set goalId(int value) {
-    _goalId = value;
-  }
+    required String incomeCategory,
+  }): /*_goalId = goalId,*/ _goalName = goalName, _goalStart = goalStart, _goalEnd = goalEnd, _goalAmount = goalAmount,
+        _incomeCategory = incomeCategory;
+  // int get goalId => _goalId!;
+  // set goalId(int value) {
+  //   _goalId = value;
+  // }
 
   String get goalName => _goalName!;
   set goalName(String value) {
     _goalName = value;
   }
 
-  DateTime get goalStart => _goalStart!;
-  set goalStart(DateTime value) {
+  String get goalStart => _goalStart!;
+  set goalStart(String value) {
     _goalStart = value;
   }
 
-  DateTime get goalEnd => _goalEnd!;
-  set goalEnd(DateTime value) {
+  String get goalEnd => _goalEnd!;
+  set goalEnd(String value) {
     _goalEnd = value;
   }
 
@@ -38,20 +40,27 @@ class Goal extends dbObject{
   set goalAmount(double value) {
     _goalAmount = value;
   }
+  String get incomeCategory => _incomeCategory!;
+  set incomeCategory(String value) {
+    _incomeCategory = value;
+  }
 
   @override
   Map<String, dynamic> toMap(){
     return{
-      'goalId': goalId,
-      'goalName': goalName,
-      'goalStart': goalStart,
-      'goalEnd': goalEnd,
-      'goalAmount': goalAmount
+     // 'goalId': goalId,
+      'goal_name': goalName,
+      'goal_start': goalStart,
+      'goal_end': goalEnd,
+      'goal_amount': goalAmount,
+      'income_category': incomeCategory
     };
   }
   @override
   String toString(){
-    return 'Goal{key: $goalId, name: $goalName, start: $goalStart, end: $goalEnd'
-        'goalAmount: $goalAmount}';
+    // return 'Goal{key: $goalId, name: $goalName, start: $goalStart, end: $goalEnd'
+    //     'goalAmount: $goalAmount, incomeCategory: $incomeCategory}';
+    return 'Goal{name: $goalName, start: $goalStart, end: $goalEnd'
+        'goalAmount: $goalAmount, incomeCategory: $incomeCategory}';
   }
 }
