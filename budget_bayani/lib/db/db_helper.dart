@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 import '../models/goals.dart';
 
 class DBHelper {
@@ -23,6 +22,7 @@ class DBHelper {
   }
 
   static Future<Database> db() async {
+    WidgetsFlutterBinding.ensureInitialized();
     return openDatabase('budget_bayani.db',
         version: 1,
         onCreate: (Database database, int version) async{
@@ -38,9 +38,18 @@ class DBHelper {
     return id;
   }
 
-  static Future<List<Map<String, dynamic>>> getGoals() async{
+  static Future<List<Goal>> getGoals() async{
     final db = await DBHelper.db();
-    return db.query('goals', orderBy: 'goal_id');
+    final List<Map<String, dynamic>> maps = await db.query('goals', orderBy: 'goal_id');
+    return List.generate(maps.length, (i) {
+      return Goal(
+        goalId: maps[i]['goal_id'] as int,
+        goalName: maps[i]['goal_name'] as String,
+        goalStart: maps[i]['goal_start'] as DateTime,
+        goalEnd: maps[i]['goal_end'] as DateTime,
+        goalAmount: maps[i]['goal_amount'] as double,
+      );
+    });
   }
 
   // To get a specific instance
@@ -72,9 +81,18 @@ class DBHelper {
     return id;
   }
 
-  static Future<List<Map<String, dynamic>>> getIncomes() async{
+  static Future<List<Incomes>> getIncomes() async{
     final db = await DBHelper.db();
-    return db.query('incomes', orderBy: 'income_id');
+    final List<Map<String, dynamic>> maps = await db.query('incomes', orderBy: 'income_id');
+    return List.generate(maps.length, (i) {
+      return Incomes(
+        id: maps[i]['id'] as int,
+        date: maps[i]['date'] as DateTime,
+        amount: maps[i]['amount'] as double,
+        incomeCategory: maps[i]['income_category'] as String,
+        incomeNote: maps[i]['income_note'] as String,
+      );
+    });
   }
 
   static Future<int> updateIncome(Logs income) async{
@@ -98,9 +116,18 @@ class DBHelper {
     final id = await db.insert('expenses', data, conflictAlgorithm: ConflictAlgorithm.replace);
     return id;
   }
-  static Future<List<Map<String, dynamic>>> getExpenses() async{
+  static Future<List<Expenses>> getExpenses() async{
     final db = await DBHelper.db();
-    return db.query('expenses', orderBy: 'expense_id');
+    final List<Map<String, dynamic>> maps = await db.query('incomes', orderBy: 'income_id');
+    return List.generate(maps.length, (i) {
+      return Expenses(
+        id: maps[i]['id'] as int,
+        date: maps[i]['date'] as DateTime,
+        amount: maps[i]['amount'] as double,
+        expenseCategory: maps[i]['expense_category'] as String,
+        expenseNote: maps[i]['expense_note'] as String,
+      );
+    });
   }
 
   static Future<int> updateExpense(Logs expense) async{
@@ -123,9 +150,15 @@ class DBHelper {
     final id = await db.insert('limits', data, conflictAlgorithm: ConflictAlgorithm.replace);
     return id;
   }
-  static Future<List<Map<String, dynamic>>> getLimits() async{
+  static Future<List<Limits>> getLimits() async{
     final db = await DBHelper.db();
-    return db.query('limits', orderBy: 'limit_id');
+    final List<Map<String, dynamic>> maps = await db.query('incomes', orderBy: 'income_id');
+    return List.generate(maps.length, (i) {
+      return Limits(
+        limitId: maps[i]['limit_id'] as int,
+        limitNumber: maps[i]['limit_number'] as double,
+      );
+    });
   }
 
   static Future<int> updateLimit(Limits limit) async{
@@ -142,5 +175,5 @@ class DBHelper {
       debugPrint("Something went wrong: $err");
     }
   }
-  
+
 }

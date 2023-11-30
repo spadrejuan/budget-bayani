@@ -1,11 +1,19 @@
 import 'db_objects.dart';
 // Inheritance, Encapsulation
 class Goal extends dbObject{
-  int? _goalId;
-  String? _goalName;
-  DateTime? _goalStart;
-  DateTime? _goalEnd;
-  double? _goalAmount;
+  int _goalId;
+  String _goalName;
+  DateTime _goalStart;
+  DateTime _goalEnd;
+  double _goalAmount;
+  Goal({
+    required int goalId,
+    required String goalName,
+    required DateTime goalStart,
+    required DateTime goalEnd,
+    required double goalAmount,
+  }): _goalId = goalId, _goalName = goalName, _goalStart = goalStart, _goalEnd = goalEnd, _goalAmount = goalAmount;
+
   int get goalId => _goalId!;
   set goalId(int value) {
     _goalId = value;

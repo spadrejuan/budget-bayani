@@ -2,10 +2,15 @@ import 'package:budget_bayani/models/db_objects.dart';
 // uses Abstract Class dbObject for Abstraction
 class Logs extends dbObject{
   // Private Objects with Setters & Getters for Encapsulation
-  int? _id;
-  DateTime? _date;
-  double? _amount;
+  int _id;
+  DateTime _date;
+  double _amount;
 
+  Logs({
+  required int id,
+  required DateTime date,
+  required double amount,
+  }): _id = id, _date = date, _amount = amount;
   int get id => _id!;
   set id(int value) {
     _id = value;
@@ -35,7 +40,13 @@ class Logs extends dbObject{
 class Expenses extends Logs{
   String? _expenseCategory;
   String? _expenseNote;
-
+  Expenses ({
+    required super.id,
+    required super.date,
+    required super.amount,
+    required String expenseCategory,
+    required String expenseNote
+  }): _expenseCategory = expenseCategory, _expenseNote = expenseNote;
   String get expenseCategory => _expenseCategory!;
   set expenseCategory(String value) {
     _expenseCategory = value;
@@ -65,7 +76,13 @@ class Expenses extends Logs{
 class Incomes extends Logs{
   String? _incomeCategory;
   String? _incomeNote;
-
+  Incomes ({
+    required super.id,
+    required super.date,
+    required super.amount,
+    required String incomeCategory,
+    required String incomeNote
+  }): _incomeCategory = incomeCategory, _incomeNote = incomeNote;
   String get incomeCategory => _incomeCategory!;
   set incomeCategory(String value) {
     _incomeCategory = value;

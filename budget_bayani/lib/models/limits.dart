@@ -1,9 +1,12 @@
 import 'package:budget_bayani/models/db_objects.dart';
 // Inheritance, Encapsulation
 class Limits extends dbObject{
-  int? _limitId;
-  double? _limitNumber;
-
+  int _limitId;
+  double _limitNumber;
+  Limits({
+    required int limitId,
+    required double limitNumber,
+  }): _limitId = limitId, _limitNumber = limitNumber;
   int get limitId => _limitId!;
   set limitId(int value) {
     _limitId = value;
