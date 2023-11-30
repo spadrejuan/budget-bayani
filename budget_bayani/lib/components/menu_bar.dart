@@ -38,7 +38,7 @@ class SideMenuBar extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const MyApp(),
+                builder: (context) => LandingPage(),
               ));
             }
       ),
@@ -72,7 +72,7 @@ class SideMenuBar extends StatelessWidget {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => const MyApp(),
+                  builder: (context) => LandingPage(),
                 ));
               }
           ),
