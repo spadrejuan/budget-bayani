@@ -80,7 +80,7 @@ class _AddEntriesFormState extends State<AddEntriesForm> {
                     flex: 4,
                     child: FormBuilderDateTimePicker(
                       name: '',
-                      initialValue: DateTime.now(),
+                      //initialValue: DateTime.now(),
                     )
                   )
                 ]
