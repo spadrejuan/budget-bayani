@@ -19,10 +19,12 @@ class _AddEntriesState extends State<AddEntries> {
         backgroundColor: AppColors.PanelBGColor,
         title: Text ('something'),
       ),
-      body: const SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Column(
-          children: <Widget>[
-            AddEntriesForm()
+          children:[
+            AddEntriesForm(),
+            SaveCancelButton,
+            //TODO make SaveCancelButton Stretch to end of screen
           ]
         )
       )
@@ -30,7 +32,62 @@ class _AddEntriesState extends State<AddEntries> {
   }
 }
 
-Widget IncomeExpenseButton = Container();
+Widget IncomeExpenseButton = Container(
+  padding: EdgeInsets.only(top:15),
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: [
+      Expanded(
+        flex: 1,
+          child:ElevatedButton(
+            onPressed: ()=>{
+              //TODO doSomething
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.BGColor,
+              shape: RoundedRectangleBorder(
+                side: BorderSide(
+                  color: AppColors.StrokeColor,
+                  width: 1.5,
+              )
+            ),
+
+            ),
+            child: const Text('Income',
+              style: TextStyle(
+                fontSize: 14,
+                color: AppColors.TextColor
+              ),
+            )
+        )
+      ),
+      SizedBox(width:20),
+      Expanded(
+        flex: 1,
+        child: ElevatedButton(
+          onPressed: ()=>{
+            //TODO doSomething
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.BGColor,
+            shape: RoundedRectangleBorder(
+                side: BorderSide(
+                  color: AppColors.StrokeColor,
+                  width: 1.5
+                ),
+            )
+          ),
+          child: const Text('Expense',
+            style: TextStyle(
+              fontSize: 14,
+              color: AppColors.TextColor,
+            ),
+          )
+        )
+      ),
+    ]
+  )
+);
 
 class AddEntriesForm extends StatefulWidget {
   const AddEntriesForm({super.key});
@@ -47,14 +104,14 @@ class _AddEntriesFormState extends State<AddEntriesForm> {
   Widget build(BuildContext context){
     return SingleChildScrollView(
       child: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
             color: AppColors.PanelBGColor,
             border: Border(
               top: BorderSide(color: AppColors.StrokeColor, width:1.5),
               bottom: BorderSide(color: AppColors.StrokeColor, width:1.5),
             )
         ),
-        padding: EdgeInsets.only(left:10, right: 20, bottom: 20),
+        padding: EdgeInsets.only(left:20, right: 20, bottom: 30),
         child: FormBuilder(
           key: _formKey,
           onChanged: (){
@@ -64,13 +121,12 @@ class _AddEntriesFormState extends State<AddEntriesForm> {
           autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             children: [
-              //Container (child: IncomeExpenseButton),
+              IncomeExpenseButton,
               //For Date and Time Picker
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Expanded(
-
                     flex: 1,
                     child: Container(
                       child: Text('Date: '),
@@ -80,9 +136,9 @@ class _AddEntriesFormState extends State<AddEntriesForm> {
                     flex: 4,
                     child: FormBuilderDateTimePicker(
                       name: '',
-                      //initialValue: DateTime.now(),
+
                     )
-                  )
+                  ),
                 ]
               ),
               Row (
@@ -136,7 +192,7 @@ class _AddEntriesFormState extends State<AddEntriesForm> {
                       )
                   )
                 ]
-              )
+              ),
             ]
           ),
         )
@@ -146,5 +202,67 @@ class _AddEntriesFormState extends State<AddEntriesForm> {
 }
 
 //TODO add saving to database
-Widget SaveCancelButton = Container();
+Widget SaveCancelButton = Container(
+  decoration: const BoxDecoration(
+      color: AppColors.PanelBGColor,
+      border: Border(
+        top: BorderSide(color: AppColors.StrokeColor, width:1.5),
+        bottom: BorderSide(color: AppColors.StrokeColor, width:1.5),
+      )
+  ),
+  margin: EdgeInsets.only(top:8),
+  padding: EdgeInsets.only(left: 20, right: 20),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Expanded(
+          flex: 2,
+          child:ElevatedButton(
+              onPressed: ()=>{
+                //TODO doSomething
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.BGColor,
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(
+                      color: AppColors.StrokeColor,
+                      width: 1.5
+                  ),
+                )
+              ),
+              child: const Text('Save',
+                style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.TextColor
+                ),
+              )
+          )
+        ),
+        SizedBox(width:20),
+        Expanded(
+          flex: 1,
+          child: ElevatedButton(
+              onPressed: ()=>{
+                //TODO doSomething
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.BGColor,
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(
+                      color: AppColors.StrokeColor,
+                      width: 1.5
+                  ),
+                )
+              ),
+              child: const Text('Cancel',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: AppColors.TextColor,
+                ),
+              )
+          )
+        ),
+      ]
+    )
+);
 
