@@ -9,6 +9,7 @@ environment:
 dependencies:
   sqflite: ^2.3.0
   pie_chart: ^5.4.0
+  progresso: ^0.3.0
   flutter:
     sdk: flutter
 
