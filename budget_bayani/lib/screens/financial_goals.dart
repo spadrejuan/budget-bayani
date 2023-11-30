@@ -2,6 +2,7 @@ import 'package:budget_bayani/components/round_button.dart';
 import 'package:flutter/material.dart';
 import '../components/AppColor.dart';
 import '../components/menu_bar.dart';
+import 'add_goals.dart';
 import 'landing_page.dart';
 class FinancialGoals extends StatefulWidget {
   const FinancialGoals({super.key});
@@ -23,6 +24,7 @@ class _FinancialGoalsState extends State<FinancialGoals> {
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
+                // Add goal with progress bar
                 //GoalContainer,
               ]
           ),
@@ -50,9 +52,8 @@ class _FinancialGoalsState extends State<FinancialGoals> {
                 child: RoundButton(
                   icon: Icons.add,
                   onPressed: () {
-                    Navigator.pop(context);
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => LandingPage(),
+                      builder: (context) => const AddGoal(),
                     ));
                   },
                 ),
