@@ -1,3 +1,4 @@
+import 'package:budget_bayani/screens/add_entries.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_bayani/components/AppColor.dart';
 import 'package:budget_bayani/components/menu_bar.dart';
@@ -34,7 +35,7 @@ class _CashFlowPage extends State<CashFlowPage> {
         onPressed: (){
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CashFlowPage()),
+            MaterialPageRoute(builder: (context) => AddEntries()),
           );
         },
         child: Icon(Icons.add),
