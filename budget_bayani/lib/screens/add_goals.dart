@@ -1,57 +1,18 @@
+import 'dart:ffi';
+
+import 'package:budget_bayani/db/db_helper.dart';
 import 'package:budget_bayani/screens/financial_goals.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:intl/intl.dart';
 import '../components/AppColor.dart';
 import '../components/menu_bar.dart';
-import 'package:intl/intl.dart';
-class AddGoal extends StatefulWidget {
+import '../models/goals.dart';
+class AddGoal extends StatelessWidget {
   const AddGoal({super.key});
   @override
-  State<AddGoal> createState() => _AddGoalState();
-}
-class _AddGoalState extends State<AddGoal> {
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: AppColors.BGColor,
-        drawer: SideMenuBar(),
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text('Add Financial Goals'),
-          backgroundColor: AppColors.PanelBGColor,
-          leading: IconButton(
-              icon: const Icon(
-                  Icons.arrow_back,
-                  color: Color(0xffCCD3D9)
-              ),
-              onPressed: (){
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => const FinancialGoals(),
-                ));
-              },
-            ),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(
-                  Icons.save,
-                  color: Color(0xffCCD3D9)
-              ),
-              onPressed: (){
-                //TODO add saving to database
-              },
-            ),
-          ],
-          ),
-        body: const SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              //TODO implement these widgets
-              AddGoalForm()
-            ],
-          ),
-        )
+    return const MaterialApp(
+        home: AddGoalForm()
     );
   }
 }
@@ -63,75 +24,150 @@ class AddGoalForm extends StatefulWidget {
 }
 
 class _AddGoalFormState extends State<AddGoalForm> {
-
-  bool autoValidate = true;
-  final _formKey = GlobalKey<FormBuilderState>();
-  var options = ['Male', 'Female', 'Other'];
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController goalEnd = TextEditingController();
+  TextEditingController goalName = TextEditingController();
+  TextEditingController goalAmount = TextEditingController();
+  List<String> sampleCategory = ['Salary', 'Saving'];
+  String _selectedCategory = 'Salary';
+  @override
+  void initState(){
+    goalEnd.text = "";
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: FormBuilder(
-        key: _formKey,
-        onChanged: (){
-          _formKey.currentState!.save();
-          debugPrint(_formKey.currentState!.value.toString());
-        },
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        child: Column(
-          children: [
-            FormBuilderDateRangePicker(
-                name: 'goal_range',
-                firstDate: DateTime.now(),
-                lastDate: DateTime.now().add(const Duration(days: 1000)),
-                format: DateFormat('yyyy-MM-dd'),
-                decoration: const InputDecoration(
-                  labelText: 'Goal Range',
-                ),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(),
-                ]),
+    return Scaffold(
+        backgroundColor: AppColors.BGColor,
+        drawer: SideMenuBar(),
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text('Add Financial Goals'),
+          backgroundColor: AppColors.PanelBGColor,
+          leading: IconButton(
+            icon: const Icon(
+                Icons.arrow_back,
+                color: Color(0xffCCD3D9)
             ),
-            FormBuilderTextField(
-                name: 'goal_name',
-                decoration: const InputDecoration(
-                  labelText: 'Goal Name:'
-                ),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(),
-                ]),
-            ),
-            FormBuilderTextField(
-              name: 'goal_amount',
-              decoration: const InputDecoration(
-                  labelText: 'Amount:'
+            onPressed: (){
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => const FinancialGoals(),
+              ));
+            },
+          ),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(
+                  Icons.save,
+                  color: Color(0xffCCD3D9)
               ),
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.required(),
-                FormBuilderValidators.numeric(),
-              ]),
-            ),
-            // TODO: add here the connection to categories in income
-            FormBuilderDropdown<String>(
-              name: 'income_category',
-              decoration: const InputDecoration(
-                  labelText: 'Category:',
-                  hintText: 'Select income category'
-              ),
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.required(),
-              ]),
-              items: options.map((category) => DropdownMenuItem(
-                alignment: AlignmentDirectional.center,
-                value: category,
-                child: Text(category),
-              )).toList(),
-              valueTransformer: (val) => val?.toString(),
+              onPressed: () async{
+                Goal newGoal = Goal(
+                    goalName: goalName.text,
+                    goalStart: DateTime.now().toIso8601String(),
+                    goalEnd: DateTime.parse(goalEnd.text).toIso8601String(),
+                    goalAmount: double.parse(goalAmount.text),
+                    // To get again as DateTime: DateTime.tryParse(String);
+                    incomeCategory: _selectedCategory
+                );
+                await DBHelper.createGoal(newGoal);
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => const FinancialGoals(),
+                ));
+              },
             ),
           ],
         ),
-      ),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+            Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                TextField(
+                  style: const TextStyle(color: AppColors.TextColor),
+                  controller: goalEnd,
+                  decoration: const InputDecoration(
+                      labelText: 'Goal Target Date',
+                      labelStyle: TextStyle(
+                      color: AppColors.TextColor, fontSize: 20,
+                      ),
+                  ),
+                  readOnly: true,
+                  onTap: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime.now().add(const Duration(days: 1096))
+                    );
+                    if(pickedDate != null){
+                      String goalDateFormatted = DateFormat('yyyy-MM-dd').format(pickedDate);
+                      setState(() {
+                        goalEnd.text = goalDateFormatted;
+                      });
+                    }
+                  },
+                ),
+                TextFormField(
+                  style: const TextStyle(color: AppColors.TextColor),
+                  controller: goalName,
+                  decoration: const InputDecoration(
+                      labelText: 'Goal Name',
+                      labelStyle: TextStyle(
+                      color: AppColors.TextColor, fontSize: 20,
+                  ),
+                  ),
+                  validator: (value){
+                    if (value == null || value.isEmpty){
+                      return ('This field cannot be empty');
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  style: const TextStyle(color: AppColors.TextColor),
+                  controller: goalAmount,
+                  keyboardType: TextInputType.phone,
+                  decoration: const InputDecoration(
+                      labelText: 'Goal Amount',
+                      labelStyle: TextStyle(
+                      color: AppColors.TextColor, fontSize: 20,
+                      ),
+                  ),
+                  validator: (value){
+                    if (value == null || value.isEmpty){
+                      return ('This field cannot be empty');
+                    }
+                    return null;
+                  },
+                ),
+                DropdownButton(
+                  style: const TextStyle(color: AppColors.TextColor),
+                  value: _selectedCategory,
+                  items: sampleCategory.map((String val){
+                    return DropdownMenuItem(
+                      value: val,
+                      child: Text(
+                          val
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (value){
+                    setState(() {
+                      _selectedCategory = value!;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+            ],
+          ),
+        )
     );
   }
 }
-
-

@@ -1,16 +1,33 @@
 import 'package:budget_bayani/components/round_button.dart';
+import 'package:budget_bayani/db/db_helper.dart';
 import 'package:flutter/material.dart';
 import '../components/AppColor.dart';
 import '../components/menu_bar.dart';
+import '../models/goals.dart';
 import 'add_goals.dart';
 import 'landing_page.dart';
 class FinancialGoals extends StatefulWidget {
   const FinancialGoals({super.key});
-
   @override
   State<FinancialGoals> createState() => _FinancialGoalsState();
 }
 class _FinancialGoalsState extends State<FinancialGoals> {
+  List<Map<String, dynamic>> _goals = [];
+  bool _isLoading = true;
+
+  void _refreshGoals() async{
+    final data = await DBHelper.getGoals();
+    setState(() {
+      _goals = data;
+      _isLoading = false;
+    });
+  }
+  @override
+  void initState(){
+    super.initState();
+    _refreshGoals();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,13 +37,21 @@ class _FinancialGoalsState extends State<FinancialGoals> {
           title: const Text('Financial Goals',),
           backgroundColor: AppColors.PanelBGColor,
         ),
-        body: const SingleChildScrollView(
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                // Add goal with progress bar
-                //GoalContainer,
-              ]
+        body: _isLoading
+        ? const Center(
+          child: CircularProgressIndicator(),
+        )
+        :  ListView.builder(
+          itemCount: _goals.length,
+          itemBuilder: (context, index) => ListView(
+                children: [
+                  Text(_goals[index]['goal_id']),
+                  Text(_goals[index]['goal_name']),
+                  Text(_goals[index]['goal_start']),
+                  Text(_goals[index]['goal_end']),
+                  Text(_goals[index]['goal_amount']),
+                  Text(_goals[index]['income_category']),
+                ],
           ),
         ),
         bottomSheet: Container(
@@ -64,4 +89,3 @@ class _FinancialGoalsState extends State<FinancialGoals> {
     );
   }
 }
-//TODO: add the financial goal widget GoalContainer
