@@ -39,6 +39,14 @@ class DBHelper {
       version: 1,
     );
   }
+  Future<int> insertExpense(Expenses expense) async{
+    int result = await db.insert('expenses', expense.toMap());
+    return result;
+  }
+  Future<List<Expenses>> retrieveExpenses() async {
+    final List<Map<String, Object?>> queryResult = await db.query('expenses');
+    return queryResult.map((e) => Expenses.fromMap(e)).toList();
+  }
   Future<int> insertGoal(Goal goal) async {
     int result = await db.insert('goals', goal.toMap());
     return result;

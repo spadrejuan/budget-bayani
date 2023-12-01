@@ -17,7 +17,7 @@ class _DatabaseState extends State<Database> {
   }
   void tableIsEmpty()async{
     db = await openDatabase('budget_bayani.db');
-    count = Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM goals'))!;
+    count = Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM expenses'))!;
     print(count);
   }
   @override
