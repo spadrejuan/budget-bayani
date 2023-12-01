@@ -18,10 +18,10 @@ class DBHelper {
 
   Future<void> createTables(Database database) async {
     await database.execute("CREATE TABLE IF NOT EXISTS incomes(income_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
-        "income_date DATETIME, income_amount DOUBLE,"
+        "income_date TEXT, income_amount DOUBLE,"
         "income_category TEXT, income_note TEXT)");
     await database.execute("CREATE TABLE IF NOT EXISTS expenses(expense_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
-        "expense_date DATETIME, expense_amount DOUBLE,"
+        "expense_date TEXT, expense_amount DOUBLE,"
         "expense_category TEXT, expense_note TEXT)");
     await database.execute("CREATE TABLE IF NOT EXISTS goals(goal_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
         "goal_name TEXT NOT NULL, goal_start TEXT NOT NULL,"

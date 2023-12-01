@@ -37,7 +37,7 @@ class _CashFlowPage extends State<CashFlowPage> {
             //MonthlySummary,
             //DailyDates,
             FutureBuilder(
-              future: db.retrieveGoals(),
+              future: db.retrieveExpenses(),
               builder: (BuildContext context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting){
                   return const Center(
@@ -57,20 +57,15 @@ class _CashFlowPage extends State<CashFlowPage> {
                   itemBuilder: (context, index) {
                     return Container(
                       child: Text(
-                        // "ID: ${snapshot.data![index].id}Note: ${snapshot.data![index].expenseNote}"
-                        //     "Date: ${snapshot.data![index].date}"
-                        //     "Amount: ${snapshot.data![index].amount}Category: ${snapshot.data![index].expenseCategory}",
-                        "ID: ${snapshot.data![index].goalId}Name: ${snapshot.data![index].goalName}"
-                            "Start: ${snapshot.data![index].goalStart}End: ${snapshot.data![index].goalEnd}"
-                            "Ampunt: ${snapshot.data![index].goalAmount}Category: ${snapshot.data![index].incomeCategory}",
+                        "ID: ${snapshot.data![index].id}Note: ${snapshot.data![index].expenseNote}"
+                            "Date: ${snapshot.data![index].date}"
+                            "Amount: ${snapshot.data![index].amount}Category: ${snapshot.data![index].expenseCategory}",
 
                       )
                     );
                   },
-
                 );
               },
-
             ),
           ],
         )
