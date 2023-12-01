@@ -70,7 +70,7 @@ class _CashFlowPage extends State<CashFlowPage> {
         onPressed: (){
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AddEntries2()),
+            MaterialPageRoute(builder: (context) => AddEntries()),
           );
         },
         child: Icon(Icons.add),

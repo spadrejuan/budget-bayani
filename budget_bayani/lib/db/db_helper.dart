@@ -6,7 +6,7 @@ import 'package:sqflite/sqflite.dart';
 import '../models/goals.dart';
 import 'package:path/path.dart';
 
-import '../models/income.dart';
+// import '../models/income.dart';
 class DBHelper {
   static final DBHelper _databaseHelper = DBHelper._();
   DBHelper._();
@@ -54,7 +54,7 @@ class DBHelper {
     return result;
   }
   Future<List<Incomes>> retrieveIncomes() async {
-    final List<Map<String, Object?>> queryResult = await db.query('expenses');
+    final List<Map<String, Object?>> queryResult = await db.query('incomes');
     return queryResult.map((e) => Incomes.fromMap(e)).toList();
   }
   Future<int> insertGoal(Goal goal) async {
