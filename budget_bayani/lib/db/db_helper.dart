@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'package:budget_bayani/models/limits.dart';
-import 'package:budget_bayani/models/logs.dart';
+import 'package:budget_bayani/models/expense.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import '../models/goals.dart';
 import 'package:path/path.dart';
+
+// import '../models/income.dart';
 class DBHelper {
   static final DBHelper _databaseHelper = DBHelper._();
   DBHelper._();
@@ -18,10 +20,10 @@ class DBHelper {
 
   Future<void> createTables(Database database) async {
     await database.execute("CREATE TABLE IF NOT EXISTS incomes(income_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
-        "income_date DATETIME, income_amount DOUBLE,"
+        "income_date TEXT, income_amount DOUBLE,"
         "income_category TEXT, income_note TEXT)");
     await database.execute("CREATE TABLE IF NOT EXISTS expenses(expense_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
-        "expense_date DATETIME, expense_amount DOUBLE,"
+        "expense_date TEXT, expense_amount DOUBLE,"
         "expense_category TEXT, expense_note TEXT)");
     await database.execute("CREATE TABLE IF NOT EXISTS goals(goal_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
         "goal_name TEXT NOT NULL, goal_start TEXT NOT NULL,"
@@ -38,6 +40,22 @@ class DBHelper {
       },
       version: 1,
     );
+  }
+  Future<int> insertExpense(Expenses expense) async{
+    int result = await db.insert('expenses', expense.toMap());
+    return result;
+  }
+  Future<List<Expenses>> retrieveExpenses() async {
+    final List<Map<String, Object?>> queryResult = await db.query('expenses');
+    return queryResult.map((e) => Expenses.fromMap(e)).toList();
+  }
+  Future<int> insertIncome(Incomes income) async{
+    int result = await db.insert('incomes', income.toMap());
+    return result;
+  }
+  Future<List<Incomes>> retrieveIncomes() async {
+    final List<Map<String, Object?>> queryResult = await db.query('incomes');
+    return queryResult.map((e) => Incomes.fromMap(e)).toList();
   }
   Future<int> insertGoal(Goal goal) async {
     int result = await db.insert('goals', goal.toMap());

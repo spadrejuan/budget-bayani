@@ -1,14 +1,24 @@
+import 'package:budget_bayani/screens/add_entries.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_bayani/components/AppColor.dart';
 import 'package:budget_bayani/components/menu_bar.dart';
-
-//TODO Change back to menu bar
-//Di ko alam if kailangan palitan yung process ng pagchange ng page
+import '../db/db_helper.dart';
+import 'add_entries_2.dart';
 class CashFlowPage extends StatefulWidget {
   @override
   State<CashFlowPage> createState() => _CashFlowPage();
 }
 class _CashFlowPage extends State<CashFlowPage> {
+  late DBHelper db;
+  @override
+  void initState(){
+    super.initState();
+    db = DBHelper();
+    db.initDB().whenComplete(() async {
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,23 +28,49 @@ class _CashFlowPage extends State<CashFlowPage> {
 
       ),
       drawer: SideMenuBar(),
-      body: SingleChildScrollView(
-        child: Column (
-          //child: Text('This is the CashFlowPage'),
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            MonthlySummary,
-            DailyDates,
-            DailyLogs(0),
-          ],
-        )
-      ),
+       body: //SingleChildScrollView(
+      //   child: Column (
+      //     crossAxisAlignment: CrossAxisAlignment.stretch,
+      //     children: [
+            // MonthlySummary,
+            // DailyDates,
+            FutureBuilder(
+              future: db.retrieveIncomes(),
+              builder: (BuildContext context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting){
+                  return const Center(
+                      child: CircularProgressIndicator()
+                  );
+                }
+                if (!snapshot.hasData){
+                  return const Center(
+                    child: Text(
+                      'No data to show',
+                      style: TextStyle(color: AppColors.TextColor),
+                    ),
+                  );
+                }
+                return ListView.builder(
+                  itemCount: snapshot.data?.length,
+                  itemBuilder: (context, index) {
+                    return Text(
+                      "ID: ${snapshot.data![index].id} Note: ${snapshot.data![index].note}"
+                          "Date: ${snapshot.data![index].date}"
+                          "Amount: ${snapshot.data![index].amount} Category: ${snapshot.data![index].category}",
+                    );
+                  },
+                );
+              },
+            ),
+      //     ],
+      //   )
+      // ),
       backgroundColor: AppColors.BGColor,
       floatingActionButton: FloatingActionButton(
         onPressed: (){
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CashFlowPage()),
+            MaterialPageRoute(builder: (context) => AddEntries()),
           );
         },
         child: Icon(Icons.add),
@@ -254,3 +290,5 @@ Widget AddEntry = Container(
 
 );
 
+//TODO Function that will create the logs
+//magloloop pa and shit to retrieve from db
