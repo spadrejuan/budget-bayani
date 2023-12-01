@@ -112,7 +112,7 @@ class _OverviewGoalsState extends State<OverviewGoals> {
                           //TODO add value for progress bar using income category
                           progress: 0.5,
                           backgroundColor: AppColors.Stroke2Color,
-                          progressColor: Colors.blueAccent,
+                          progressColor: Colors.redAccent,
                         ),
                       ],
                     ),
