@@ -1,7 +1,9 @@
 import 'package:budget_bayani/components/round_button.dart';
 import 'package:budget_bayani/db/db_helper.dart';
+import 'package:budget_bayani/screens/overview_goals.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:progresso/progresso.dart';
 import '../components/AppColor.dart';
 import '../components/menu_bar.dart';
 import '../models/goals.dart';
@@ -13,7 +15,6 @@ class FinancialGoals extends StatefulWidget {
   State<FinancialGoals> createState() => _FinancialGoalsState();
 }
 class _FinancialGoalsState extends State<FinancialGoals> {
-  late Goal _goal;
   late DBHelper db;
   @override
   void initState(){
@@ -34,6 +35,7 @@ class _FinancialGoalsState extends State<FinancialGoals> {
           backgroundColor: AppColors.PanelBGColor,
         ),
         body: FutureBuilder(
+          // TODO fix dates to output Month, Day, Year
           future: db.retrieveGoals(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting){
@@ -52,11 +54,78 @@ class _FinancialGoalsState extends State<FinancialGoals> {
             return ListView.builder(
               itemCount: snapshot.data?.length,
               itemBuilder: (context, index){
-                return Container(
-                  child: Text(
-                    "ID: ${snapshot.data![index].goalId}Name: ${snapshot.data![index].goalName}"
-                        "Start: ${snapshot.data![index].goalStart}End: ${snapshot.data![index].goalEnd}"
-                        "Ampunt: ${snapshot.data![index].goalAmount}Category: ${snapshot.data![index].incomeCategory}",
+                return Center(
+                  child: Stack(
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            snapshot.data![index].goalEnd,
+                            style: const TextStyle(
+                              color: AppColors.TextColor,
+                            ),
+                          ),
+                          const Text(
+                            ' - ',
+                            style: TextStyle(
+                              color: AppColors.TextColor,
+                              fontSize: 15,
+                            ),
+                          ),
+                          Text(
+                           snapshot.data![index].goalEnd,
+                            style: const TextStyle(
+                              color: AppColors.TextColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        snapshot.data![index].goalName,
+                        style: const TextStyle(
+                          color: AppColors.TextColor,
+                          fontSize: 15,
+                          ),
+                        ),
+                      Column(
+                        children: [
+                          IconButton(
+                            onPressed: () async {
+                              await db.deleteUser(snapshot.data![index].goalId!);
+                              setState(() {
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.delete
+                            ),
+                            color: Colors.red,
+                          ),
+                          Progresso(
+                            //TODO add value for progress bar using income category
+                            progress: 0.5,
+                            backgroundColor: AppColors.Stroke2Color,
+                            progressColor: Colors.blueAccent,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Text(
+                            // TODO add values of added categories here
+                              'Php. 100',
+                              style: TextStyle(
+                              color: AppColors.TextColor,
+                              ),
+                            ),
+                          Text(
+                            ' of ${snapshot.data![index].goalAmount}saved[${snapshot.data![index].incomeCategory}]',
+                            style: const TextStyle(
+                              color: AppColors.TextColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 );
               },
@@ -73,9 +142,8 @@ class _FinancialGoalsState extends State<FinancialGoals> {
                 child: RoundButton(
                   icon: Icons.menu,
                   onPressed: () {
-                    Navigator.pop(context);
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => LandingPage(),
+                      builder: (context) => const OverviewGoals(),
                     ));
                   },
                 ),

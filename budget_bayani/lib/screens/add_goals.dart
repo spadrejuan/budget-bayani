@@ -55,7 +55,6 @@ class _AddGoalFormState extends State<AddGoalForm> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: AppColors.BGColor,
-        drawer: SideMenuBar(),
         appBar: AppBar(
           centerTitle: true,
           title: const Text('Add Financial Goals'),
