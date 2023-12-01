@@ -6,6 +6,8 @@ import '../main.dart';
 import '../screens/landing_page.dart';
 import 'package:budget_bayani/components/AppColor.dart';
 
+import '../screens/test.dart';
+
 class SideMenuBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -72,7 +74,7 @@ class SideMenuBar extends StatelessWidget {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => LandingPage(),
+                  builder: (context) => Database(),
                 ));
               }
           ),

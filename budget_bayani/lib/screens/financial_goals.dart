@@ -1,6 +1,7 @@
 import 'package:budget_bayani/components/round_button.dart';
 import 'package:budget_bayani/db/db_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../components/AppColor.dart';
 import '../components/menu_bar.dart';
 import '../models/goals.dart';
@@ -12,47 +13,55 @@ class FinancialGoals extends StatefulWidget {
   State<FinancialGoals> createState() => _FinancialGoalsState();
 }
 class _FinancialGoalsState extends State<FinancialGoals> {
-  List<Map<String, dynamic>> _goals = [];
-  bool _isLoading = true;
-
-  void _refreshGoals() async{
-    final data = await DBHelper.getGoals();
-    setState(() {
-      _goals = data;
-      _isLoading = false;
-    });
-  }
+  late Goal _goal;
+  late DBHelper db;
   @override
   void initState(){
     super.initState();
-    _refreshGoals();
+    db = DBHelper();
+    db.initDB().whenComplete(() async {
+      setState(() {});
+    });
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: AppColors.BGColor,
         drawer: SideMenuBar(),
         appBar: AppBar(
-          title: const Text('Financial Goals',),
+          centerTitle: true,
+          title: const Text('Financial Goals'),
           backgroundColor: AppColors.PanelBGColor,
         ),
-        body: _isLoading
-        ? const Center(
-          child: CircularProgressIndicator(),
-        )
-        :  ListView.builder(
-          itemCount: _goals.length,
-          itemBuilder: (context, index) => ListView(
-                children: [
-                  Text(_goals[index]['goal_id']),
-                  Text(_goals[index]['goal_name']),
-                  Text(_goals[index]['goal_start']),
-                  Text(_goals[index]['goal_end']),
-                  Text(_goals[index]['goal_amount']),
-                  Text(_goals[index]['income_category']),
-                ],
-          ),
+        body: FutureBuilder(
+          future: db.retrieveGoals(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting){
+              return const Center(
+                  child: CircularProgressIndicator()
+              );
+            }
+            if (!snapshot.hasData){
+              return const Center(
+                  child: Text(
+                    'No data to show',
+                    style: TextStyle(color: AppColors.TextColor),
+                  ),
+              );
+            }
+            return ListView.builder(
+              itemCount: snapshot.data?.length,
+              itemBuilder: (context, index){
+                return Container(
+                  child: Text(
+                    "ID: ${snapshot.data![index].goalId}Name: ${snapshot.data![index].goalName}"
+                        "Start: ${snapshot.data![index].goalStart}End: ${snapshot.data![index].goalEnd}"
+                        "Ampunt: ${snapshot.data![index].goalAmount}Category: ${snapshot.data![index].incomeCategory}",
+                  ),
+                );
+              },
+            );
+          },
         ),
         bottomSheet: Container(
           color: const Color(0xff121B1F),

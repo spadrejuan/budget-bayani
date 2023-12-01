@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:budget_bayani/db/db_helper.dart';
 import 'package:budget_bayani/screens/financial_goals.dart';
 import 'package:flutter/material.dart';
@@ -30,10 +28,28 @@ class _AddGoalFormState extends State<AddGoalForm> {
   TextEditingController goalAmount = TextEditingController();
   List<String> sampleCategory = ['Salary', 'Saving'];
   String _selectedCategory = 'Salary';
+  late Goal _goal;
+  late DBHelper db;
   @override
   void initState(){
-    goalEnd.text = "";
     super.initState();
+    db = DBHelper();
+    goalEnd.text = "";
+    db.initDB().whenComplete(() async {
+      setState(() {});
+    });
+  }
+  Future<void> addGoal() async{
+    String name = goalName.text;
+    String start = DateTime.now().toIso8601String();
+    String end = DateTime.parse(goalEnd.text).toIso8601String();
+    double amount = double.parse(goalAmount.text);
+    String incomeCategory = _selectedCategory;
+    Goal goal = Goal (goalName: name, goalStart: start, goalEnd: end, goalAmount: amount, incomeCategory: incomeCategory);
+    await insertGoal(goal);
+  }
+  Future<int> insertGoal (Goal goal) async{
+    return await db.insertGoal(goal);
   }
   @override
   Widget build(BuildContext context) {
@@ -62,15 +78,7 @@ class _AddGoalFormState extends State<AddGoalForm> {
                   color: Color(0xffCCD3D9)
               ),
               onPressed: () async{
-                Goal newGoal = Goal(
-                    goalName: goalName.text,
-                    goalStart: DateTime.now().toIso8601String(),
-                    goalEnd: DateTime.parse(goalEnd.text).toIso8601String(),
-                    goalAmount: double.parse(goalAmount.text),
-                    // To get again as DateTime: DateTime.tryParse(String);
-                    incomeCategory: _selectedCategory
-                );
-                await DBHelper.createGoal(newGoal);
+                    await addGoal();
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
                     builder: (context) => const FinancialGoals(),
                 ));

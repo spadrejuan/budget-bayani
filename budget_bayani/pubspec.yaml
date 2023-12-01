@@ -7,7 +7,7 @@ environment:
   sdk: '>=3.1.0 <4.0.0'
 
 dependencies:
-  sqflite: ^2.3.0
+  sqflite: ^2.1.0+1
   pie_chart: ^5.4.0
   progresso: ^0.3.0
   intl: ^0.17.0
