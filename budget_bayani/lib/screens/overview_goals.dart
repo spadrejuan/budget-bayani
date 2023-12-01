@@ -99,7 +99,7 @@ class _OverviewGoalsState extends State<OverviewGoals> {
                       children: [
                         IconButton(
                           onPressed: () async {
-                            await db.deleteUser(snapshot.data![index].goalId!);
+                            await db.deleteGoal(snapshot.data![index].goalId!);
                             setState(() {
                             });
                           },

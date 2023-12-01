@@ -29,7 +29,7 @@ class DBHelper {
         "goal_name TEXT NOT NULL, goal_start TEXT NOT NULL,"
         "goal_end TEXT NOT NULL, goal_amount DOUBLE NOT NULL, income_category TEXT NOT NULL)");
     await database.execute("CREATE TABLE IF NOT EXISTS  limits(limit_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
-        "limit_number DOUBLE)");
+        "limit_amount DOUBLE, limit_threshold TEXT)");
   }
   Future<void> initDB() async {
     String path = await getDatabasesPath();
@@ -57,6 +57,7 @@ class DBHelper {
     final List<Map<String, Object?>> queryResult = await db.query('incomes');
     return queryResult.map((e) => Incomes.fromMap(e)).toList();
   }
+
   Future<int> insertGoal(Goal goal) async {
     int result = await db.insert('goals', goal.toMap());
     return result;
@@ -69,8 +70,31 @@ class DBHelper {
     final List<Map<String, Object?>> queryResult = await db.query('goals');
     return queryResult.map((e) => Goal.fromMap(e)).toList();
   }
-  Future<void> deleteUser(int id) async {
+  Future<void> deleteGoal(int id) async {
     await db.delete('goals', where: 'goal_id=?', whereArgs: [id]);
   }
+
+  Future<int> insertLimit(Limit limit) async {
+    int result = await db.insert('limits', limit.toMap());
+    return result;
+  }
+  Future<int> updateLimit(Limit limit) async {
+    int result = await db.update('limits', limit.toMap(), where: 'limit_id=?', whereArgs: [limit.limitId],);
+    return result;
+  }
+  Future<List<Limit>> retrieveLimit() async {
+    final List<Map<String, Object?>> queryResult = await db.query('limits');
+    return queryResult.map((e) => Limit.fromMap(e)).toList();
+  }
+  Future<void> deleteLimit(int id) async {
+    await db.delete('limits', where: 'limit_id=?', whereArgs: [id]);
+  }
+  Future<List<Limit>> retrieveLimitByThreshold(String string) async {
+    final List<Map<String, Object?>> queryResult = await db.rawQuery('SELECT * FROM limits WHERE limit_threshold=?', [string]);
+    return queryResult.map((e) => Limit.fromMap(e)).toList();
+  }
+  Future<void> deleteLimitByThreshold(String string) async {
+    await db.delete('limits', where: 'limit_threshold=?', whereArgs: [string]);
+}
 
 }

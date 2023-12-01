@@ -1,30 +1,48 @@
-import 'package:budget_bayani/models/db_objects.dart';
+import 'db_objects.dart';
 // Inheritance, Encapsulation
-class Limits extends dbObject{
-  int _limitId;
-  double _limitNumber;
-  Limits({
-    required int limitId,
-    required double limitNumber,
-  }): _limitId = limitId, _limitNumber = limitNumber;
-  int get limitId => _limitId!;
-  set limitId(int value) {
-    _limitId = value;
+class Limit extends dbObject {
+  int? limitId;
+  double _limitAmount;
+  String _limitThreshold;
+
+  Limit({
+    this.limitId,
+    required double limitAmount,
+    required String limitThreshold,
+  })
+      :
+        _limitAmount = limitAmount,
+        _limitThreshold = limitThreshold;
+
+  double get limitAmount => _limitAmount;
+
+  set limitAmount(double value) {
+    _limitAmount = value;
   }
-  double get limitNumber => _limitNumber!;
-  set limitNumber(double value) {
-    _limitNumber = value;
+
+  String get limitThreshold => _limitThreshold;
+
+  set limitThreshold(String value) {
+    _limitThreshold = value;
   }
 
   @override
-  Map<String, dynamic> toMap(){
-    return{
-      'limitId': limitId,
-      'limitNumber': limitNumber,
+  Map<String, Object?> toMap() {
+    return {
+      'limit_id': limitId,
+      'limit_amount': limitAmount,
+      'limit_threshold': limitThreshold
     };
   }
+  Limit.fromMap(Map <String, dynamic> map)
+      :
+        limitId = map["limit_id"],
+        _limitAmount = map["limit_amount"],
+        _limitThreshold = map["limit_threshold"];
+
   @override
-  String toString(){
-    return 'Limit{limitId: $limitId, limitNumber: $limitNumber}';
+  String toString() {
+    return 'Limit{key: $limitId, limitAmount: $limitAmount, limitThreshold: $limitThreshold}';
   }
+
 }

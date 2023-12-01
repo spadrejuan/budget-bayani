@@ -91,7 +91,7 @@ class _FinancialGoalsState extends State<FinancialGoals> {
                         children: [
                           IconButton(
                             onPressed: () async {
-                              await db.deleteUser(snapshot.data![index].goalId!);
+                              await db.deleteGoal(snapshot.data![index].goalId!);
                               setState(() {
                               });
                             },
