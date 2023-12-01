@@ -2,9 +2,8 @@ import 'package:budget_bayani/screens/add_entries.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_bayani/components/AppColor.dart';
 import 'package:budget_bayani/components/menu_bar.dart';
-
 import '../db/db_helper.dart';
-
+import 'add_entries_2.dart';
 class CashFlowPage extends StatefulWidget {
   @override
   State<CashFlowPage> createState() => _CashFlowPage();
@@ -29,15 +28,14 @@ class _CashFlowPage extends State<CashFlowPage> {
 
       ),
       drawer: SideMenuBar(),
-      body: SingleChildScrollView(
-        child: Column (
-          //child: Text('This is the CashFlowPage'),
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            //MonthlySummary,
-            //DailyDates,
+       body: //SingleChildScrollView(
+      //   child: Column (
+      //     crossAxisAlignment: CrossAxisAlignment.stretch,
+      //     children: [
+            // MonthlySummary,
+            // DailyDates,
             FutureBuilder(
-              future: db.retrieveExpenses(),
+              future: db.retrieveIncomes(),
               builder: (BuildContext context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting){
                   return const Center(
@@ -55,27 +53,24 @@ class _CashFlowPage extends State<CashFlowPage> {
                 return ListView.builder(
                   itemCount: snapshot.data?.length,
                   itemBuilder: (context, index) {
-                    return Container(
-                      child: Text(
-                        "ID: ${snapshot.data![index].id}Note: ${snapshot.data![index].expenseNote}"
-                            "Date: ${snapshot.data![index].date}"
-                            "Amount: ${snapshot.data![index].amount}Category: ${snapshot.data![index].expenseCategory}",
-
-                      )
+                    return Text(
+                      "ID: ${snapshot.data![index].id} Note: ${snapshot.data![index].note}"
+                          "Date: ${snapshot.data![index].date}"
+                          "Amount: ${snapshot.data![index].amount} Category: ${snapshot.data![index].category}",
                     );
                   },
                 );
               },
             ),
-          ],
-        )
-      ),
+      //     ],
+      //   )
+      // ),
       backgroundColor: AppColors.BGColor,
       floatingActionButton: FloatingActionButton(
         onPressed: (){
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AddEntries()),
+            MaterialPageRoute(builder: (context) => AddEntries2()),
           );
         },
         child: Icon(Icons.add),

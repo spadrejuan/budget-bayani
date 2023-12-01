@@ -3,11 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:budget_bayani/db/db_helper.dart';
 import 'package:budget_bayani/components/AppColor.dart';
-
-import '../models/logs.dart';
-
-
-
+import '../models/expense.dart';
+import 'add_entries_2.dart';
 class AddEntries extends StatelessWidget {
   @override
   Widget build(BuildContext context){
@@ -46,7 +43,7 @@ class _AddEntriesFormState extends State<AddEntriesForm> {
     String date = DateTime.parse(expenseDate.text).toIso8601String();//DateTime.parse(expenseDate.text).toIso8601String();
     double amount = double.parse(expenseAmount.text);
     String expenseCategory = _selectedCategory;
-    Expenses expense = Expenses (date: date, amount: amount, expenseCategory: expenseCategory, expenseNote: note);
+    Expenses expense = Expenses(date: date, amount: amount, category: expenseCategory, note: note);
     await insertExpense(expense);
   }
   Future<int> insertExpense(Expenses expense) async{
@@ -60,7 +57,7 @@ class _AddEntriesFormState extends State<AddEntriesForm> {
       backgroundColor: AppColors.BGColor,
       appBar: AppBar(
         backgroundColor: AppColors.PanelBGColor,
-        title: Text ('something'),
+        title: Text ('Expense'),
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
@@ -103,7 +100,7 @@ class _AddEntriesFormState extends State<AddEntriesForm> {
                 key: _formKey,
                 child: Column(
                   children: <Widget>[
-                    IncomeExpenseButton,
+                    IncomeExpenseButton(context),
                     //For Date and Time Picker
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -258,7 +255,7 @@ class _AddEntriesFormState extends State<AddEntriesForm> {
 }
 
 
-Widget IncomeExpenseButton = Container(
+Widget IncomeExpenseButton(context) => Container(
     padding: EdgeInsets.only(top:15),
     child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -267,7 +264,9 @@ Widget IncomeExpenseButton = Container(
               flex: 1,
               child:ElevatedButton(
                   onPressed: ()=>{
-                    //TODO doSomething
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => AddEntries2(),
+                    ))
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.BGColor,
