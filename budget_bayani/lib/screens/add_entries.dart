@@ -25,7 +25,7 @@ class _AddEntriesFormState extends State<AddEntriesForm> {
   TextEditingController expenseName= TextEditingController();
   TextEditingController expenseAmount = TextEditingController();
   TextEditingController expenseDate = TextEditingController();
-  List<String> sampleCategory = ['Food', 'Transporations'];
+  List<String> sampleCategory = ['Food', 'Transportation', 'Leisure', 'Clothing', 'Pets', 'Education', 'Health', 'Other'];
   String _selectedCategory = 'Food';
 
   late DBHelper db;
