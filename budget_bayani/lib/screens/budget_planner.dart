@@ -16,14 +16,19 @@ class BudgetPlanner extends StatefulWidget {
   State<BudgetPlanner> createState() => _BudgetPlannerState();
 }
 class _BudgetPlannerState extends State<BudgetPlanner> {
+  late List<Map<String,dynamic>> limits;
+  _loadLimits() async {
+    limits = await db.retrieveLimits();
+    print(limits);
+    setState(() {
+    });
+  }
   late DBHelper db;
   @override
   void initState(){
     super.initState();
     db = DBHelper();
-    db.initDB().whenComplete(() async {
-      setState(() {});
-    });
+    _loadLimits();
   }
   @override
   Widget build(BuildContext context) {
@@ -36,7 +41,7 @@ class _BudgetPlannerState extends State<BudgetPlanner> {
         backgroundColor: AppColors.PanelBGColor,
       ),
       body: FutureBuilder(
-        future: db.retrieveLimit(),
+        future: db.retrieveDailyExpenses(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting){
             return const Center(
@@ -55,36 +60,107 @@ class _BudgetPlannerState extends State<BudgetPlanner> {
             itemCount: snapshot.data?.length,
             itemBuilder: (context, index){
               return Center(
-                child: Text(
-                  'ID: ' + snapshot.data![index].limitId.toString() +
-                      "Amount: " + snapshot.data![index].limitAmount.toString() +
-                      "Threshold: " + snapshot.data![index].limitThreshold,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                      SizedBox(height: 50.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                            Text(
+                            DateFormat.yMMMd().format(DateTime.now()),
+                            style: const TextStyle(
+                            color: AppColors.TextColor,
+                                    ),
+                            ),
+                        ],
+                      ),
+                      SizedBox(height: 10.0),
+                      Row(
+                        children: [
+                          Expanded(
+                          child: Container(
+                          margin: EdgeInsets.only(left: 40.0),
+                          child: const Text(
+                          'Daily Budget',
+                          style: TextStyle(
+                          color: AppColors.TextColor,
+                          fontSize: 25,
+                          ),
+                          ),
+                          ),
+                          ),
+                          // Add Spacer to push IconButton to the right
+                          Container(
+                          margin: EdgeInsets.only(right: 30.0),
+                          child: IconButton(
+                          onPressed: () async {
+                          await db.deleteLimitByThreshold('Daily');
+                          setState(() {});
+                          },
+                          icon: const Icon(Icons.delete),
+                          color: Colors.red,
+                          ),
+                          ),
+                          ], // Add a comma to separate the Expanded widget from the next widget
+                          ),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 40.0, vertical: 8.0),
+                      width: double.infinity,
+                      height: 10.0,
+                      child: Progresso(
+                        progress: 0.5,
+                        backgroundColor: AppColors.Stroke2Color,
+                        progressColor: Colors.redAccent,
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 40.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                           Text(
+                            'Php. ${snapshot.data![index].amount}',
+                            style: TextStyle(
+                              color: AppColors.TextColor,
+                            ),
+                          ),
+                          Text(
+                            ' of }spent',
+                            style: const TextStyle(
+                              color: AppColors.TextColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               );
             },
           );
         },
       ),
-      bottomSheet: Container(
-        color: const Color(0xff121B1F),
-        height: 60,
-        child: Row(
-          children: [
-            const Spacer(),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: RoundButton(
-                icon: Icons.add,
-                onPressed: () {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => const SetLimit(),
-                  ));
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
+      // bottomSheet: Container(
+      //   color: const Color(0xff121B1F),
+      //   height: 60,
+      //   child: Row(
+      //     children: [
+      //       const Spacer(),
+      //       Align(
+      //         alignment: Alignment.bottomRight,
+      //         child: RoundButton(
+      //           icon: Icons.add,
+      //           onPressed: () {
+      //             Navigator.of(context).pushReplacement(MaterialPageRoute(
+      //               builder: (context) => const SetLimit(),
+      //             ));
+      //           },
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // ),
     );
   }
 }

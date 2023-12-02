@@ -2,7 +2,6 @@ import 'package:budget_bayani/components/round_button.dart';
 import 'package:budget_bayani/db/db_helper.dart';
 import 'package:budget_bayani/screens/overview_goals.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:progresso/progresso.dart';
 import '../components/app_color.dart';
 import '../components/menu_bar.dart';
@@ -35,8 +34,8 @@ class _FinancialGoalsState extends State<FinancialGoals> {
           backgroundColor: AppColors.PanelBGColor,
         ),
         body: FutureBuilder(
-          // TODO fix dates to output Month, Day, Year
-          future: db.retrieveGoals(),
+          // TODO add progresso code
+          future: db.retrieveExistingGoals(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting){
               return const Center(
@@ -55,7 +54,6 @@ class _FinancialGoalsState extends State<FinancialGoals> {
               itemCount: snapshot.data?.length,
               itemBuilder: (context, index){
                 return Center(
-
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -63,7 +61,6 @@ class _FinancialGoalsState extends State<FinancialGoals> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-
                           Text(
                             snapshot.data![index].goalStart,
                             style: const TextStyle(
