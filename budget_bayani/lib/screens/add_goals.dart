@@ -45,8 +45,10 @@ class _AddGoalFormState extends State<AddGoalForm> {
 
   Future<void> addGoal() async{
     String name = goalName.text;
-    String start = DateTime.now().toIso8601String();
-    String end = DateTime.parse(goalEnd.text).toIso8601String();
+    String start = DateFormat.yMMMd().format(DateTime.now());
+    print('ETO OH $start');
+    String end = DateFormat.yMMMd().format(DateTime.parse(goalEnd.text));
+    print('HERE ETO $end');
     double amount = double.parse(goalAmount.text);
     String incomeCategory = selectedCategory;
     Goal goal = Goal (goalName: name, goalStart: start, goalEnd: end, goalAmount: amount, incomeCategory: incomeCategory);

@@ -6,9 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:progresso/progresso.dart';
 import '../components/app_color.dart';
 import '../components/menu_bar.dart';
-import '../models/goals.dart';
 import 'add_goals.dart';
-import 'landing_page.dart';
+import 'package:intl/date_symbol_data_local.dart';
 class FinancialGoals extends StatefulWidget {
   const FinancialGoals({super.key});
   @override
@@ -20,6 +19,7 @@ class _FinancialGoalsState extends State<FinancialGoals> {
   void initState(){
     super.initState();
     db = DBHelper();
+    initializeDateFormatting();
     db.initDB().whenComplete(() async {
       setState(() {});
     });
@@ -65,7 +65,7 @@ class _FinancialGoalsState extends State<FinancialGoals> {
                         children: [
 
                           Text(
-                            snapshot.data![index].goalEnd,
+                            snapshot.data![index].goalStart,
                             style: const TextStyle(
                               color: AppColors.TextColor,
                             ),
