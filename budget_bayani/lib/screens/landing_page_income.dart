@@ -1,22 +1,22 @@
 import 'package:budget_bayani/components/menu_bar.dart';
-import 'package:budget_bayani/screens/landing_page_income.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_bayani/components/app_color.dart';
 import 'package:pie_chart/pie_chart.dart';
 
 import '../db/db_helper.dart';
+import 'landing_page.dart';
 
 enum DashboardViews{
   income,
   expenses
 }
 
-class LandingPage extends StatefulWidget {
+class LandingPage2 extends StatefulWidget {
   @override
-  State<LandingPage> createState() => _LandingPageState();
+  State<LandingPage2> createState() => _LandingPage2State();
 }
 //Di ko alam ginagawa ko
-class _LandingPageState extends State<LandingPage> {
+class _LandingPage2State extends State<LandingPage2> {
   late DBHelper db;
   @override
   void initState(){
@@ -26,68 +26,63 @@ class _LandingPageState extends State<LandingPage> {
       setState((){});
     });
   }
-  // Map<String, double> mapData= {};
   late DashboardViews selectedDashboardView;
   @override
-
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.BGColor,
-      drawer: SideMenuBar(),
-      appBar: AppBar(
-        title: Text('Home'),
-        backgroundColor: AppColors.PanelBGColor,
-      ),
+        backgroundColor: AppColors.BGColor,
+        drawer: SideMenuBar(),
+        appBar: AppBar(
+          title: Text('Home'),
+          backgroundColor: AppColors.PanelBGColor,
+        ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             IncomeExpenseSelector(context),
-            //Piechart
             FutureBuilder(
-                future: db.retrieveExpenses(),
-                builder: (BuildContext context, snapshot){
-                  if (snapshot.connectionState == ConnectionState.waiting){
-                    return const Center(
-                        child: CircularProgressIndicator()
-                    );
-                  }
-                  if (!snapshot.hasData){
-                    return const Center(
-                      child: Text(
-                        'No data to show',
-                        style: TextStyle(color: AppColors.TextColor),
-                      ),
-                    );
-                  }
-                  Map<String, double> data = {};
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: snapshot.data?.length,
-                    itemBuilder: (context, index){
-                      String category = snapshot.data![index].category;
-                      double amount = snapshot.data![index].amount.toDouble();
-                      data.update(category, (existingValue) => existingValue + amount, ifAbsent: () => amount);
-
-                      return Container (
-                        child: (snapshot.data?.length != null && index == snapshot.data!.length -1) ?
-                        PieChart(
-                          dataMap: data,
-                          chartValuesOptions: ChartValuesOptions(
-                              showChartValues: false
-                          ),
-                          // legendOptions: LegendOptions(
-                          //   showLegends: false,
-                          // ),
-                        ) :SizedBox()
-                      );
-                    }
+              future: db.retrieveIncomes(),
+              builder: (BuildContext context, snapshot){
+                if (snapshot.connectionState == ConnectionState.waiting){
+                  return const Center(
+                      child: CircularProgressIndicator()
                   );
                 }
-            ),
-            //Categories
+                if (!snapshot.hasData){
+                  return const Center(
+                    child: Text(
+                      'No data to show',
+                      style: TextStyle(color: AppColors.TextColor),
+                    ),
+                  );
+                }
+                Map<String, double> data = {};
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: snapshot.data?.length,
+                  itemBuilder: (context, index){
+                    String category = snapshot.data![index].category;
+                    double amount = snapshot.data![index].amount.toDouble();
+                    data.update(category, (existingValue) => existingValue + amount, ifAbsent: () => amount);
 
-            // CategoryContainer
+                    return Container (
+                      child: (snapshot.data?.length != null && index == snapshot.data!.length -1) ?
+                      PieChart(
+                        dataMap: data,
+                        chartValuesOptions: ChartValuesOptions(
+                            showChartValues: false
+                        ),
+                        // legendOptions: LegendOptions(
+                        //   showLegends: false,
+                        // ),
+                      )
+                      :SizedBox());
+                  }
+                );
+              }
+            ),
+
           ]
         ),
       )
@@ -106,50 +101,79 @@ Widget IncomeExpenseSelector(context) => Container (
           //bottom: BorderSide(color: AppColors.StrokeColor, width:1),
         )
     ),
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    children: [
-      Expanded(
-        flex:1,
-        child: Center(
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Expanded(
+            flex:1,
+            child: Center(
+                child: InkWell(
+                    onTap: (){
+                      //TODO doSomething
+                    },
+                    child: const Text(
+                        'Income',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.normal,
+                          color: AppColors.TextColor,
+                        )
+                    )
+                )
+            )
+        ),
+        Expanded(
+          flex: 1,
           child: InkWell(
-            onTap: (){
+            onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => LandingPage2()),
+                MaterialPageRoute(builder: (context) => LandingPage()),
               );
             },
-            child: const Text(
-              'Income',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.normal,
-                color: AppColors.TextColor,
-              )
-            )
-          )
-        )
-      ),
-      Expanded(
-        flex: 1,
-        child: InkWell(
-          onTap: () {
-
-          },
-          child: const Center(
+            child: const Center(
               child: Text(
-              'Expense',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.normal,
-                color: AppColors.TextColor,
+                'Expense',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.normal,
+                  color: AppColors.TextColor,
+                )
               )
             )
           )
-        )
-      ),
-    ]
-  )
+        ),
+      ]
+    )
+);
+
+//TODO Retrieve actual Data
+Widget PieChartContainer(context) => Container(
+  padding: EdgeInsets.only(top:25, bottom: 25),
+  margin: EdgeInsets.only(bottom: 5),
+  decoration: BoxDecoration(
+      color: AppColors.PanelBGColor,
+      border: Border(
+        top: BorderSide(color: AppColors.StrokeColor, width:1.5),
+        bottom: BorderSide(color: AppColors.StrokeColor, width:1.5),
+      )
+  ),
+  child: PieChart(
+    dataMap: {
+      'Apples': 10,
+      'Bananas': 15,
+      'Oranges': 20,
+    },
+    chartType: ChartType.disc,
+    animationDuration: Duration(seconds: 1),
+    chartRadius: MediaQuery.of(context).size.width / 3,
+    legendOptions: LegendOptions(
+      showLegends: false,
+    ),
+    chartValuesOptions: ChartValuesOptions(
+        showChartValues: false
+    ),
+  ),
 );
 
 
@@ -302,33 +326,3 @@ Widget CategoryContainer = Container (
 
 );
 
-//TODO Category Builder
-Widget CategoryBuilder = Container();
-
-Widget PieChartContainer(context) => Container(
-  padding: EdgeInsets.only(top:25, bottom: 25),
-  margin: EdgeInsets.only(bottom: 5),
-  decoration: BoxDecoration(
-      color: AppColors.PanelBGColor,
-      border: Border(
-        top: BorderSide(color: AppColors.StrokeColor, width:1.5),
-        bottom: BorderSide(color: AppColors.StrokeColor, width:1.5),
-      )
-  ),
-  child: PieChart(
-    dataMap: {
-      'Apples': 10,
-      'Bananas': 15,
-      'Oranges': 20,
-    },
-    chartType: ChartType.disc,
-    animationDuration: Duration(seconds: 1),
-    chartRadius: MediaQuery.of(context).size.width / 3,
-    legendOptions: LegendOptions(
-      showLegends: false,
-    ),
-    chartValuesOptions: ChartValuesOptions(
-        showChartValues: false
-    ),
-  ),
-);
