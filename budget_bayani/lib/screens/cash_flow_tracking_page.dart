@@ -173,9 +173,6 @@ class _CashFlowPage extends State<CashFlowPage> {
       ),
     );
   }
-
-
-
 }
 //TODO Header na Month and year
 //Baka sa appbar na rin ilalagay
@@ -327,7 +324,6 @@ Widget DailyDates(date, Income, Expenses) => Container(
     ],
   ),
 );
-
 
 //Skeleton
 //Text Color relative to category
