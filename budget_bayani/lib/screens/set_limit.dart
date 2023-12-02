@@ -1,7 +1,7 @@
 import 'package:budget_bayani/db/db_helper.dart';
 import 'package:budget_bayani/screens/budget_planner.dart';
 import 'package:flutter/material.dart';
-import '../components/AppColor.dart';
+import '../components/app_color.dart';
 import '../models/limits.dart';
 class SetLimit extends StatelessWidget {
   const SetLimit({super.key});

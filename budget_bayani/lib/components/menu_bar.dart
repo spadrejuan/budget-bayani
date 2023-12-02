@@ -3,7 +3,7 @@ import 'package:budget_bayani/screens/cash_flow_tracking_page.dart';
 import 'package:budget_bayani/screens/financial_goals.dart';
 import 'package:flutter/material.dart';
 import '../screens/landing_page.dart';
-import 'package:budget_bayani/components/AppColor.dart';
+import 'package:budget_bayani/components/app_color.dart';
 class SideMenuBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

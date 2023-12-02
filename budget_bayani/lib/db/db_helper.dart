@@ -6,6 +6,8 @@ import 'package:sqflite/sqflite.dart';
 import '../models/goals.dart';
 import 'package:path/path.dart';
 
+import '../models/income.dart';
+
 // import '../models/income.dart';
 class DBHelper {
   static final DBHelper _databaseHelper = DBHelper._();

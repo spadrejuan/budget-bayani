@@ -2,7 +2,7 @@ import 'package:budget_bayani/db/db_helper.dart';
 import 'package:budget_bayani/screens/financial_goals.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../components/AppColor.dart';
+import '../components/app_color.dart';
 import '../models/goals.dart';
 class AddGoal extends StatelessWidget {
   const AddGoal({super.key});

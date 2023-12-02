@@ -4,7 +4,7 @@ import 'package:budget_bayani/screens/overview_goals.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:progresso/progresso.dart';
-import '../components/AppColor.dart';
+import '../components/app_color.dart';
 import '../components/menu_bar.dart';
 import '../models/goals.dart';
 import 'add_goals.dart';
