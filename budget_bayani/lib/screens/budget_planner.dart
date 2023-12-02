@@ -136,26 +136,26 @@ class _BudgetPlannerState extends State<BudgetPlanner> {
           );
         },
       ),
-      // bottomSheet: Container(
-      //   color: const Color(0xff121B1F),
-      //   height: 60,
-      //   child: Row(
-      //     children: [
-      //       const Spacer(),
-      //       Align(
-      //         alignment: Alignment.bottomRight,
-      //         child: RoundButton(
-      //           icon: Icons.add,
-      //           onPressed: () {
-      //             Navigator.of(context).pushReplacement(MaterialPageRoute(
-      //               builder: (context) => const SetLimit(),
-      //             ));
-      //           },
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // ),
+      bottomSheet: Container(
+        color: const Color(0xff121B1F),
+        height: 60,
+        child: Row(
+          children: [
+            const Spacer(),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: RoundButton(
+                icon: Icons.add,
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => const SetLimit(),
+                  ));
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

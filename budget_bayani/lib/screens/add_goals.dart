@@ -31,7 +31,6 @@ class _AddGoalFormState extends State<AddGoalForm> {
   late String selectedCategory;
   _loadList() async{
     categories = await db.retrieveIncomeCategories();
-    print(categories);
     selectedCategory = categories[0]['income_category'];
     setState(() {
     });
@@ -46,9 +45,7 @@ class _AddGoalFormState extends State<AddGoalForm> {
   Future<void> addGoal() async{
     String name = goalName.text;
     String start = DateFormat.yMMMd().format(DateTime.now());
-    print('ETO OH $start');
     String end = DateFormat.yMMMd().format(DateTime.parse(goalEnd.text));
-    print('HERE ETO $end');
     double amount = double.parse(goalAmount.text);
     String incomeCategory = selectedCategory;
     Goal goal = Goal (goalName: name, goalStart: start, goalEnd: end, goalAmount: amount, incomeCategory: incomeCategory);

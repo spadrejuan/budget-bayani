@@ -42,7 +42,6 @@ class _OverviewGoalsState extends State<OverviewGoals> {
         ),
       ),
       body: FutureBuilder(
-        // TODO: add progresso code
         future: db.retrieveExpiredGoals(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting){

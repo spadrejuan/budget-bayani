@@ -34,7 +34,6 @@ class _FinancialGoalsState extends State<FinancialGoals> {
           backgroundColor: AppColors.PanelBGColor,
         ),
         body: FutureBuilder(
-          // TODO add progresso code
           future: db.retrieveExistingGoals(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting){
