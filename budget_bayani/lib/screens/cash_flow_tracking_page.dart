@@ -29,7 +29,7 @@ class _CashFlowPage extends State<CashFlowPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('CashFlowPage'),
+        title: Text('Cash Flow Tracker'),
         backgroundColor: AppColors.PanelBGColor,
 
       ),
@@ -97,6 +97,7 @@ class _CashFlowPage extends State<CashFlowPage> {
                     }
 
                     return Container(
+
                       child: Column(
                         children: [
                           // if (isMonthChanged) MonthlySummary(monthlyIncome, monthlyExpense, monthlyNet),
@@ -265,114 +266,122 @@ Widget MonthlySummary(Income, Expense, Total) => Container(
 );
 
 Widget DailyDates(date, Income, Expenses) => Container(
-  padding: EdgeInsets.only(top:10, bottom: 10),
+  padding: EdgeInsets.only(top: 10, bottom: 10),
   decoration: BoxDecoration(
-      color: AppColors.PanelBGColor,
-      border: Border(
-        top: BorderSide(color: AppColors.StrokeColor, width:0),
-        bottom: BorderSide(color: AppColors.StrokeColor, width:1),
-      )
+    color: AppColors.PanelBGColor,
+    border: Border(
+      top: BorderSide(color: AppColors.StrokeColor, width: 0),
+      bottom: BorderSide(color: AppColors.StrokeColor, width: 1),
+    ),
   ),
-  child:  Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-      //Date
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-              date.toString(),
-            style:TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: AppColors.TextColor
-            )
-          )
-        ],
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+    children: [
+      // Date
+      Container(
+        margin: EdgeInsets.only(left: 16.0),
+        child: Text(
+          date.toString(),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: AppColors.TextColor,
+          ),
+        ),
       ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children:[
-          //Income
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                Income.toString(), //retrieve from db
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.normal,
-                    color: AppColors.IncomeColor
-                ),
+      SizedBox(
+        width: 200.0, // Adjust the width as needed
+      ),
+      // Income (centered)
+      Expanded(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              Income.toString(), // retrieve from db
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.normal,
+                color: AppColors.IncomeColor,
               ),
-            ],
-          ),
-          //Expense
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                Expenses.toString(), //retrieve from db
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.normal,
-                    color: AppColors.ExpenseColor
-                ),
-              ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
 
+      // Expense (aligned to the right)
+      Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Text(
+            Expenses.toString(), // retrieve from db
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.normal,
+              color: AppColors.ExpenseColor,
+            ),
+          ),
+          SizedBox(width: 16.0), // Add some space between income and expense if needed
+        ],
+      ),
     ],
   ),
 );
 
+
 //Skeleton
 //Text Color relative to category
 Widget DailyLogs(category, note, amount, textColor) => Container(
-    padding: EdgeInsets.only(top:10, bottom: 10),
-    decoration: BoxDecoration(
-        color: AppColors.PanelBGColor,
-        border: Border(
-          top: BorderSide(color: AppColors.StrokeColor, width:0),
-          bottom: BorderSide(color: AppColors.StrokeColor, width:1),
-        )
+  padding: EdgeInsets.only(top: 10, bottom: 10),
+  decoration: BoxDecoration(
+    color: AppColors.PanelBGColor,
+    border: Border(
+      top: BorderSide(color: AppColors.StrokeColor, width: 0),
+      bottom: BorderSide(color: AppColors.StrokeColor, width: 1),
     ),
+  ),
   child: Row(
     children: [
-      //Category
+      // Category
       Container(
+        margin: EdgeInsets.only(left: 16.0),
         child: Text(
           category.toString().replaceAll(RegExp('[{}]'), ''),
           style: TextStyle(
             fontSize: 10,
             color: Colors.white54,
-          )
-        )
+          ),
+        ),
       ),
-      //Item Name
-      Container(
-        child: Text(
-          note.toString().replaceAll(RegExp('[{}]'), ''),
-          style: TextStyle(
-            fontSize:16,
-            fontWeight: FontWeight.normal,
-            color: AppColors.TextColor
-          )
-        )
+      SizedBox(width: 20.0),
+
+      // Item Name (expanded)
+      Expanded(
+        child: Container(
+          child: Text(
+            note.toString().replaceAll(RegExp('[{}]'), ''),
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.normal,
+              color: AppColors.TextColor,
+            ),
+          ),
+        ),
       ),
-      //Amount
+
+      // Amount (aligned to the right)
       Container(
+        margin: EdgeInsets.only(right: 16.0,left:20.0), // Adjust padding as needed
         child: Text(
           "₱ ${amount.toString().replaceAll(RegExp('[{}]'), '')}",
           style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.normal,
-              color: textColor//AppColors.TextColor
+            fontSize: 16,
+            fontWeight: FontWeight.normal,
+            color: textColor, // AppColors.TextColor
           ),
-        )
+        ),
       ),
     ],
-  )
+  ),
 );
+
