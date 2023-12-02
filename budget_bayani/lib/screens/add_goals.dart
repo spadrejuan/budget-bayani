@@ -5,17 +5,20 @@ import 'package:intl/intl.dart';
 import '../components/AppColor.dart';
 import '../components/menu_bar.dart';
 import '../models/goals.dart';
+
 class AddGoal extends StatelessWidget {
-  const AddGoal({super.key});
+  const AddGoal({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-        home: AddGoalForm()
+      home: AddGoalForm(),
     );
   }
 }
+
 class AddGoalForm extends StatefulWidget {
-  const AddGoalForm({super.key});
+  const AddGoalForm({Key? key}) : super(key: key);
 
   @override
   State<AddGoalForm> createState() => _AddGoalFormState();
@@ -30,8 +33,9 @@ class _AddGoalFormState extends State<AddGoalForm> {
   String _selectedCategory = 'Salary';
   late Goal _goal;
   late DBHelper db;
+
   @override
-  void initState(){
+  void initState() {
     super.initState();
     db = DBHelper();
     goalEnd.text = "";
@@ -39,79 +43,84 @@ class _AddGoalFormState extends State<AddGoalForm> {
       setState(() {});
     });
   }
-  Future<void> addGoal() async{
+
+  Future<void> addGoal() async {
     String name = goalName.text;
     String start = DateTime.now().toIso8601String();
     String end = DateTime.parse(goalEnd.text).toIso8601String();
     double amount = double.parse(goalAmount.text);
     String incomeCategory = _selectedCategory;
-    Goal goal = Goal (goalName: name, goalStart: start, goalEnd: end, goalAmount: amount, incomeCategory: incomeCategory);
+    Goal goal = Goal(
+      goalName: name,
+      goalStart: start,
+      goalEnd: end,
+      goalAmount: amount,
+      incomeCategory: incomeCategory,
+    );
     await insertGoal(goal);
   }
-  Future<int> insertGoal (Goal goal) async{
+
+  Future<int> insertGoal(Goal goal) async {
     return await db.insertGoal(goal);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppColors.BGColor,
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text('Add Financial Goals'),
-          backgroundColor: AppColors.PanelBGColor,
-          leading: IconButton(
-            icon: const Icon(
-                Icons.arrow_back,
-                color: Color(0xffCCD3D9)
-            ),
-            onPressed: (){
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
+      backgroundColor: AppColors.BGColor,
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text('Add Financial Goals'),
+        backgroundColor: AppColors.PanelBGColor,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Color(0xffCCD3D9),
+          ),
+          onPressed: () {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
                 builder: (context) => const FinancialGoals(),
-              ));
+              ),
+            );
+          },
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(
+              Icons.save,
+              color: Color(0xffCCD3D9),
+            ),
+            onPressed: () async {
+              await addGoal();
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => const FinancialGoals(),
+                ),
+              );
             },
           ),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(
-                  Icons.save,
-                  color: Color(0xffCCD3D9)
-              ),
-              onPressed: () async{
-                    await addGoal();
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => const FinancialGoals(),
-                ));
-              },
-            ),
-          ],
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-            Form(
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+          child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                TextField(
-                  style: const TextStyle(color: AppColors.TextColor),
+                buildInputWithDivider(
+                  label: 'Goal Target Date',
                   controller: goalEnd,
-                  decoration: const InputDecoration(
-                      labelText: 'Goal Target Date',
-                      labelStyle: TextStyle(
-                      color: AppColors.TextColor, fontSize: 20,
-                      ),
-                  ),
-                  readOnly: true,
                   onTap: () async {
                     DateTime? pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime.now(),
-                        lastDate: DateTime.now().add(const Duration(days: 1096))
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime.now().add(const Duration(days: 1096)),
                     );
-                    if(pickedDate != null){
+                    if (pickedDate != null) {
                       String goalDateFormatted = DateFormat('yyyy-MM-dd').format(pickedDate);
                       setState(() {
                         goalEnd.text = goalDateFormatted;
@@ -119,35 +128,23 @@ class _AddGoalFormState extends State<AddGoalForm> {
                     }
                   },
                 ),
-                TextFormField(
-                  style: const TextStyle(color: AppColors.TextColor),
+                buildInputWithDivider(
+                  label: 'Goal Name',
                   controller: goalName,
-                  decoration: const InputDecoration(
-                      labelText: 'Goal Name',
-                      labelStyle: TextStyle(
-                      color: AppColors.TextColor, fontSize: 20,
-                  ),
-                  ),
-                  validator: (value){
-                    if (value == null || value.isEmpty){
-                      return ('This field cannot be empty');
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'This field cannot be empty';
                     }
                     return null;
                   },
                 ),
-                TextFormField(
-                  style: const TextStyle(color: AppColors.TextColor),
+                buildInputWithDivider(
+                  label: 'Goal Amount',
                   controller: goalAmount,
                   keyboardType: TextInputType.phone,
-                  decoration: const InputDecoration(
-                      labelText: 'Goal Amount',
-                      labelStyle: TextStyle(
-                      color: AppColors.TextColor, fontSize: 20,
-                      ),
-                  ),
-                  validator: (value){
-                    if (value == null || value.isEmpty){
-                      return ('This field cannot be empty');
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'This field cannot be empty';
                     }
                     return null;
                   },
@@ -155,15 +152,13 @@ class _AddGoalFormState extends State<AddGoalForm> {
                 DropdownButton(
                   style: const TextStyle(color: AppColors.TextColor),
                   value: _selectedCategory,
-                  items: sampleCategory.map((String val){
+                  items: sampleCategory.map((String val) {
                     return DropdownMenuItem(
                       value: val,
-                      child: Text(
-                          val
-                      ),
+                      child: Text(val),
                     );
                   }).toList(),
-                  onChanged: (value){
+                  onChanged: (value) {
                     setState(() {
                       _selectedCategory = value!;
                     });
@@ -172,9 +167,36 @@ class _AddGoalFormState extends State<AddGoalForm> {
               ],
             ),
           ),
-            ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildInputWithDivider({
+    required String label,
+    required TextEditingController controller,
+    VoidCallback? onTap,
+    TextInputType? keyboardType,
+    FormFieldValidator<String>? validator,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        TextField(
+          style: const TextStyle(color: AppColors.TextColor),
+          controller: controller,
+          decoration: InputDecoration(
+            labelText: label,
+            labelStyle: const TextStyle(
+              color: AppColors.TextColor,
+              fontSize: 20,
+            ),
           ),
-        )
+          readOnly: onTap != null,
+          onTap: onTap,
+        ),
+
+      ],
     );
   }
 }
