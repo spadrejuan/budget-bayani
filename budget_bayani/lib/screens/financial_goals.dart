@@ -87,7 +87,6 @@ class _FinancialGoalsState extends State<FinancialGoals> {
                       ),
                       SizedBox(height: 10.0),
                       // Add a SizedBox for spacing
-
                       Row(
                         children: [
                           Expanded(
@@ -107,7 +106,7 @@ class _FinancialGoalsState extends State<FinancialGoals> {
                             margin: EdgeInsets.only(right: 30.0),
                             child: IconButton(
                               onPressed: () async {
-                                await db.deleteUser(snapshot.data![index].goalId!);
+                                await db.deleteGoal(snapshot.data![index].goalId!);
                                 setState(() {});
                               },
                               icon: const Icon(Icons.delete),
@@ -150,11 +149,6 @@ class _FinancialGoalsState extends State<FinancialGoals> {
                     ],
                   ),
                 );
-
-
-
-
-
               },
             );
           },
