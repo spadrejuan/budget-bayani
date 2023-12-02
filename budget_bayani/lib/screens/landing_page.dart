@@ -29,7 +29,7 @@ class _LandingPageState extends State<LandingPage> {
   // Map<String, double> mapData= {};
   late DashboardViews selectedDashboardView;
   @override
-  bool isIncome = false;
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.BGColor,
@@ -62,209 +62,31 @@ class _LandingPageState extends State<LandingPage> {
                   }
                   Map<String, double> data = {};
                   return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: snapshot.data?.length,
-                      itemBuilder: (context, index){
-                        String category = snapshot.data![index].category;
-                        double amount = snapshot.data![index].amount.toDouble();
-                        data.update(category, (existingValue) => existingValue + amount, ifAbsent: () => amount);
+                    shrinkWrap: true,
+                    itemCount: snapshot.data?.length,
+                    itemBuilder: (context, index){
+                      String category = snapshot.data![index].category;
+                      double amount = snapshot.data![index].amount.toDouble();
+                      data.update(category, (existingValue) => existingValue + amount, ifAbsent: () => amount);
 
-                        return Container (
-                            child: (snapshot.data?.length != null && index == snapshot.data!.length -1) ?
-                            PieChart(
-                              dataMap: data,
-                              chartValuesOptions: ChartValuesOptions(
-                                  showChartValues: false
-                              ),
-                              // legendOptions: LegendOptions(
-                              //   showLegends: false,
-                              // ),
-                            )
-                                :SizedBox());
-                      }
+                      return Container (
+                        child: (snapshot.data?.length != null && index == snapshot.data!.length -1) ?
+                        PieChart(
+                          dataMap: data,
+                          chartValuesOptions: ChartValuesOptions(
+                              showChartValues: false
+                          ),
+                          // legendOptions: LegendOptions(
+                          //   showLegends: false,
+                          // ),
+                        ) :SizedBox()
+                      );
+                    }
                   );
                 }
             ),
             //Categories
-            FutureBuilder(
-              future: db.retrieveExpenses(),
-              builder: (BuildContext context, snapshot){
-                if (snapshot.connectionState == ConnectionState.waiting){
-                  return const Center(
-                    child: CircularProgressIndicator()
-                    );
-                }
-                if (!snapshot.hasData){
-                  return const Center(
-                    child: Text(
-                      'No data to show',
-                      style: TextStyle(color: AppColors.TextColor),
-                    ),
-                  );
-                }
-                Map<String, double> data = {};
-                return ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: snapshot.data?.length,
-                  itemBuilder: (context, index){
-                    String category = snapshot.data![index].category;
-                    double amount = snapshot.data![index].amount.toDouble();
-                    data.update(category, (existingValue) => existingValue + amount, ifAbsent: () => amount);
 
-                    return Container (
-                      child: (snapshot.data?.length != null && index == snapshot.data!.length -1) ?
-                      Container (
-                        padding: EdgeInsets.only(top:8, bottom: 8),
-                        decoration: BoxDecoration(
-                            color: AppColors.PanelBGColor,
-                            border: Border(
-                              top: BorderSide(color: AppColors.StrokeColor, width:1.5),
-                              bottom: BorderSide(color: AppColors.StrokeColor, width:1.5),
-                            )
-                        ),
-                        child: Column(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.symmetric(vertical: 5), // Add top and bottom margin
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 40, // Adjust the width as needed
-                                    height: 20, // Adjust the height as needed
-                                    decoration: BoxDecoration(
-                                      color: Colors.red,
-                                      borderRadius: BorderRadius.circular(8), // Adjust the radius as needed
-                                    ),
-                                  ),
-                                  SizedBox(width: 10), // Add some spacing between the box and the text
-                                  Text('Apple'),
-                                  Spacer(), // Takes up all available space between 'Apple' and the price
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 10), // Adjust the right padding as needed
-                                    child: Text('\$2.99'), // Replace this with your actual price
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              height: 1, // Adjust the thickness of the line as needed
-                              color: Color(0xFF273F4B), // Use the specified color
-                            ),
-                            Container(
-                              margin: EdgeInsets.symmetric(vertical: 5), // Add top and bottom margin
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 40,
-                                    height: 20,
-                                    decoration: BoxDecoration(
-                                      color: Colors.green, // Example color for other fruits
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  Text('Banana'),
-                                  Spacer(),
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 10),
-                                    child: Text('\$1.99'),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              height: 1,
-                              color: Color(0xFF273F4B),
-                            ),
-                            Container(
-                              margin: EdgeInsets.symmetric(vertical: 5), // Add top and bottom margin
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 40,
-                                    height: 20,
-                                    decoration: BoxDecoration(
-                                      color: Colors.orange, // Example color for other fruits
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  Text('Orange'),
-                                  Spacer(),
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 10),
-                                    child: Text('\$0.99'),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              height: 1,
-                              color: Color(0xFF273F4B),
-                            ),
-                            Container(
-                              margin: EdgeInsets.symmetric(vertical: 5), // Add top and bottom margin
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 40,
-                                    height: 20,
-                                    decoration: BoxDecoration(
-                                      color: Colors.purple, // Example color for other fruits
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  Text('Grapes'),
-                                  Spacer(),
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 10),
-                                    child: Text('\$3.49'),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              height: 1,
-                              color: Color(0xFF273F4B),
-                            ),
-                            Container(
-                              margin: EdgeInsets.symmetric(vertical: 5), // Add top and bottom margin
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 40,
-                                    height: 20,
-                                    decoration: BoxDecoration(
-                                      color: Colors.yellow, // Example color for other fruits
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  Text('Pineapple'),
-                                  Spacer(),
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 10),
-                                    child: Text('\$4.99'),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              height: 1,
-                              color: Color(0xFF273F4B),
-                            ),
-                            // Add more fruit rows as needed
-                            // ...
-                          ],
-                        ),
-
-                      )
-                    :SizedBox());
-                  }
-                );
-              }
-            ),
             // CategoryContainer
           ]
         ),

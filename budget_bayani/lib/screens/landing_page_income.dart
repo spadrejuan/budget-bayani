@@ -82,7 +82,7 @@ class _LandingPage2State extends State<LandingPage2> {
                 );
               }
             ),
-            CategoryContainer
+
           ]
         ),
       )
