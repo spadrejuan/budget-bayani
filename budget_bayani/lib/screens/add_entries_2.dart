@@ -27,8 +27,8 @@ class _AddEntries2FormState extends State<AddEntries2Form> {
   TextEditingController incomeName= TextEditingController();
   TextEditingController incomeAmount = TextEditingController();
   TextEditingController incomeDate = TextEditingController();
-  List<String> sampleCategory = ['Food', 'Transporations'];
-  String _selectedCategory = 'Food';
+  List<String> sampleCategory = ['Salary', 'Allowance', 'Bonus', 'Other'];
+  String _selectedCategory = 'Salary';
 
   late DBHelper db;
   @override

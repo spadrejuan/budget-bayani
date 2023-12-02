@@ -2,7 +2,10 @@ import 'package:budget_bayani/screens/add_entries.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_bayani/components/app_color.dart';
 import 'package:budget_bayani/components/menu_bar.dart';
+import 'package:intl/intl.dart';
 import '../db/db_helper.dart';
+import '../models/expense.dart';
+import '../models/income.dart';
 import 'add_entries_2.dart';
 class CashFlowPage extends StatefulWidget {
   @override
@@ -10,6 +13,9 @@ class CashFlowPage extends StatefulWidget {
 }
 class _CashFlowPage extends State<CashFlowPage> {
   late DBHelper db;
+  double monthlyNet = 0;
+  double monthlyIncome = 0;
+  double monthlyExpense = 0;
   @override
   void initState(){
     super.initState();
@@ -23,20 +29,21 @@ class _CashFlowPage extends State<CashFlowPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('CashFlowPage'),
+        title: Text('Cash Flow Tracker'),
         backgroundColor: AppColors.PanelBGColor,
 
       ),
       drawer: SideMenuBar(),
-       body: //SingleChildScrollView(
-      //   child: Column (
-      //     crossAxisAlignment: CrossAxisAlignment.stretch,
-      //     children: [
-            // MonthlySummary,
-            // DailyDates,
+       body:
+       SingleChildScrollView(
+        child: Column (
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            MonthlySummary(monthlyIncome, monthlyExpense, monthlyNet),
             FutureBuilder(
-              future: db.retrieveIncomes(),
-              builder: (BuildContext context, snapshot) {
+              future: Future.wait([db.retrieveIncomes(), db.retrieveExpenses()]),
+              // builder: (BuildContext context, incomeSnap) {
+                builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot){
                 if (snapshot.connectionState == ConnectionState.waiting){
                   return const Center(
                       child: CircularProgressIndicator()
@@ -50,21 +57,109 @@ class _CashFlowPage extends State<CashFlowPage> {
                     ),
                   );
                 }
+                List<dynamic> combinedList = [];
+                if (snapshot.data![0] != null) {
+                  combinedList.addAll(snapshot.data![0]);
+                }
+                if (snapshot.data![1] != null) {
+                  combinedList.addAll(snapshot.data![1]);
+                }
+                combinedList.sort((a, b) => b.date.compareTo(a.date));
+                double totalIncome = 0;
+                double totalExpenses = 0;
                 return ListView.builder(
-                  itemCount: snapshot.data?.length,
-                  itemBuilder: (context, index) {
-                    return Text(
-                      "ID: ${snapshot.data![index].id} Note: ${snapshot.data![index].note}"
-                          "Date: ${snapshot.data![index].date}"
-                          "Amount: ${snapshot.data![index].amount} Category: ${snapshot.data![index].category}",
+                  shrinkWrap: true,
+                  itemCount: combinedList.length,
+                  itemBuilder: (context, index){
+                    var data = combinedList[index];
+                    print(data);
+                    //Color Change
+                    Color textColor = data is Incomes ? AppColors.IncomeColor : AppColors.ExpenseColor;
+                    //For date grouping
+                    DateTime currentDate = DateTime.parse(data.date);
+                    DateTime? previousDate = index > 0 ? DateTime.parse(combinedList[index-1].date) : null;
+                    //For removing time in DateTime
+                    DateTime currentDateWithoutTime = DateTime(currentDate.year, currentDate.month, currentDate.day);
+                    DateTime? previousDateWithoutTime = previousDate != null
+                        ? DateTime(previousDate.year, previousDate.month, previousDate.day)
+                        : null;
+                    bool isDateChanged = currentDateWithoutTime != previousDateWithoutTime;
+                    //For total per day
+                    if(isDateChanged){
+                      totalExpenses = 0;
+                      totalIncome = 0;
+                    }
+                    if(data is Incomes) {
+                      totalIncome += data.amount;
+                    }
+                    if(data is Expenses){
+                      totalExpenses += data.amount;
+                    }
+
+                    return Container(
+
+                      child: Column(
+                        children: [
+                          // if (isMonthChanged) MonthlySummary(monthlyIncome, monthlyExpense, monthlyNet),
+                          if (isDateChanged) DailyDates(DateFormat('MM-dd').format(currentDate), totalIncome, totalExpenses),
+                          DailyLogs(data.category, data.note, data.amount, textColor),
+                        ],
+                      )
                     );
                   },
                 );
+                // return FutureBuilder(
+                //   future: db.retrieveExpenses(),
+                //   builder: (BuildContext context, expenseSnap) {
+                //     if (incomeSnap.connectionState == ConnectionState.waiting){
+                //       return const Center(
+                //         child: CircularProgressIndicator()
+                //       );
+                //     }
+                //     if (!incomeSnap.hasData){
+                //       return const Center(
+                //         child: Text(
+                //           'No data to show',
+                //           style: TextStyle(color: AppColors.TextColor),
+                //         ),
+                //     );
+                //     }
+                //     return  ListView.builder(
+                //       shrinkWrap: true,
+                //       itemCount: ((incomeSnap.data?.length ?? 0) > (expenseSnap.data?.length ?? 0)) ? incomeSnap.data?.length ?? 0 : expenseSnap.data?.length ?? 0,
+                //       itemBuilder: (context, index){
+                //         return Container(
+                //             child: Column(
+                //                 children: [
+                //                   if(index>=0 && index< incomeSnap.data!.length)
+                //                     DailyLogs({incomeSnap.data?[index].date}, {incomeSnap.data?[index].note}, {incomeSnap.data?[index].amount}),
+                //                   if(index>=0 && index< expenseSnap.data!.length)
+                //                     DailyLogs({expenseSnap.data?[index].date}, {expenseSnap.data?[index].note}, {expenseSnap.data?[index].amount}),
+                //           ])
+                //         );
+                //       },
+                //     );
+                //   }
+                // );
+
+                // return ListView.builder(
+                //   shrinkWrap: true,
+                //   itemCount: snapshot.data?.length,
+                //   itemBuilder: (context, index) {
+                //     return Text(
+                //       "ID: ${snapshot.data![index].id} "
+                //       "Note: ${snapshot.data![index].note}"
+                //       "Date: ${snapshot.data![index].date}"
+                //       "Amount: ${snapshot.data![index].amount} "
+                //       "Category: ${snapshot.data![index].category}",
+                //     );
+                //   },
+                // );
               },
             ),
-      //     ],
-      //   )
-      // ),
+          ],
+        )
+      ),
       backgroundColor: AppColors.BGColor,
       floatingActionButton: FloatingActionButton(
         onPressed: (){
@@ -78,9 +173,10 @@ class _CashFlowPage extends State<CashFlowPage> {
       ),
     );
   }
+
+
+
 }
-
-
 //TODO Header na Month and year
 //Baka sa appbar na rin ilalagay
 Widget MonthYear = Container(
@@ -88,7 +184,7 @@ Widget MonthYear = Container(
 );
 
 //TODO Try to convert to sticky
-Widget MonthlySummary = Container(
+Widget MonthlySummary(Income, Expense, Total) => Container(
   padding: EdgeInsets.only(top:10, bottom: 10),
   //margin: EdgeInsets.only(bottom:5),
   decoration: BoxDecoration(
@@ -98,7 +194,7 @@ Widget MonthlySummary = Container(
       bottom: BorderSide(color: AppColors.StrokeColor, width:1),
     )
   ),
-  child: const Row(
+  child:  Row(
     //Income / Expense / Total
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: [
@@ -106,7 +202,7 @@ Widget MonthlySummary = Container(
       Column(
         children: [
           Text(
-            'Income',
+            "Income",
             style:TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -114,7 +210,7 @@ Widget MonthlySummary = Container(
             ),
           ),
           Text(
-            '5,000',
+            Income.toString(),
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.normal,
@@ -135,7 +231,7 @@ Widget MonthlySummary = Container(
               ),
             ),
             Text(
-              '5,000',
+              Expense.toString(),
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.normal,
@@ -156,7 +252,7 @@ Widget MonthlySummary = Container(
               ),
             ),
             Text(
-              '5,000', //retrieve from db
+              Total.toString(), //retrieve from db
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.normal,
@@ -169,126 +265,123 @@ Widget MonthlySummary = Container(
   ),
 );
 
-Widget DailyDates = Container(
-  padding: EdgeInsets.only(top:10, bottom: 10),
+Widget DailyDates(date, Income, Expenses) => Container(
+  padding: EdgeInsets.only(top: 10, bottom: 10),
   decoration: BoxDecoration(
-      color: AppColors.PanelBGColor,
-      border: Border(
-        top: BorderSide(color: AppColors.StrokeColor, width:0),
-        bottom: BorderSide(color: AppColors.StrokeColor, width:1),
-      )
+    color: AppColors.PanelBGColor,
+    border: Border(
+      top: BorderSide(color: AppColors.StrokeColor, width: 0),
+      bottom: BorderSide(color: AppColors.StrokeColor, width: 1),
+    ),
   ),
-  child: const Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-      //Date
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            '15',
-            style:TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: AppColors.TextColor
-            )
-          )
-        ],
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+    children: [
+      // Date
+      Container(
+        margin: EdgeInsets.only(left: 16.0),
+        child: Text(
+          date.toString(),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: AppColors.TextColor,
+          ),
+        ),
       ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children:[
-          //Income
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '5,000', //retrieve from db
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.normal,
-                    color: AppColors.IncomeColor
-                ),
+      SizedBox(
+        width: 200.0, // Adjust the width as needed
+      ),
+      // Income (centered)
+      Expanded(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              Income.toString(), // retrieve from db
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.normal,
+                color: AppColors.IncomeColor,
               ),
-            ],
-          ),
-          //Expense
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '5,000', //retrieve from db
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.normal,
-                    color: AppColors.ExpenseColor
-                ),
-              ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
 
+      // Expense (aligned to the right)
+      Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Text(
+            Expenses.toString(), // retrieve from db
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.normal,
+              color: AppColors.ExpenseColor,
+            ),
+          ),
+          SizedBox(width: 16.0), // Add some space between income and expense if needed
+        ],
+      ),
     ],
   ),
 );
 
-//TODO Compiles DailyLogs
-//Di ko pa maisip paano magretrieve from db
-Widget DailyLogsContainer = Container ();
+
 //Skeleton
 //Text Color relative to category
-Widget DailyLogs(number) => Container(
-    padding: EdgeInsets.only(top:10, bottom: 10),
-    margin: EdgeInsets.only(bottom:5),
-    decoration: BoxDecoration(
-        color: AppColors.PanelBGColor,
-        border: Border(
-          top: BorderSide(color: AppColors.StrokeColor, width:0),
-          bottom: BorderSide(color: AppColors.StrokeColor, width:1),
-        )
+Widget DailyLogs(category, note, amount, textColor) => Container(
+  padding: EdgeInsets.only(top: 10, bottom: 10),
+  decoration: BoxDecoration(
+    color: AppColors.PanelBGColor,
+    border: Border(
+      top: BorderSide(color: AppColors.StrokeColor, width: 0),
+      bottom: BorderSide(color: AppColors.StrokeColor, width: 1),
     ),
+  ),
   child: Row(
     children: [
-      //Category
+      // Category
       Container(
-        child: const Text(
-          'categName',
+        margin: EdgeInsets.only(left: 16.0),
+        child: Text(
+          category.toString().replaceAll(RegExp('[{}]'), ''),
           style: TextStyle(
             fontSize: 10,
             color: Colors.white54,
-          )
-        )
+          ),
+        ),
       ),
-      //Item Name
-      Container(
-        child: Text(
-          'Item',
-          style: TextStyle(
-            fontSize:16,
-            fontWeight: FontWeight.normal,
-            color: AppColors.TextColor
-          )
-        )
-      ),
-      //Amount
-      Container(
-        child: Text(
-          '5,000',
-          style: TextStyle(
+      SizedBox(width: 20.0),
+
+      // Item Name (expanded)
+      Expanded(
+        child: Container(
+          child: Text(
+            note.toString().replaceAll(RegExp('[{}]'), ''),
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.normal,
-              color: AppColors.TextColor
+              color: AppColors.TextColor,
+            ),
           ),
-        )
+        ),
+      ),
+
+      // Amount (aligned to the right)
+      Container(
+        margin: EdgeInsets.only(right: 16.0,left:20.0), // Adjust padding as needed
+        child: Text(
+          "₱ ${amount.toString().replaceAll(RegExp('[{}]'), '')}",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.normal,
+            color: textColor, // AppColors.TextColor
+          ),
+        ),
       ),
     ],
-  )
+  ),
 );
 
-Widget AddEntry = Container(
-
-);
-
-//TODO Function that will create the logs
-//magloloop pa and shit to retrieve from db

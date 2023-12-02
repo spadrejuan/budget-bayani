@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:budget_bayani/components/app_color.dart';
 import 'package:pie_chart/pie_chart.dart';
 
+import '../db/db_helper.dart';
+
 enum DashboardViews{
   income,
   expenses
@@ -14,6 +16,16 @@ class LandingPage extends StatefulWidget {
 }
 //Di ko alam ginagawa ko
 class _LandingPageState extends State<LandingPage> {
+  late DBHelper db;
+  @override
+  void initState(){
+    super.initState();
+    db = DBHelper();
+    db.initDB().whenComplete(() async{
+      setState((){});
+    });
+  }
+  // Map<String, double> mapData= {};
   late DashboardViews selectedDashboardView;
   @override
   Widget build(BuildContext context) {
@@ -29,9 +41,45 @@ class _LandingPageState extends State<LandingPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             IncomeExpenseSelector,
-            PieChartContainer(context),
+            //PieChartContainer(context),
+            FutureBuilder(
+              future: db.retrieveExpenses(),
+              builder: (BuildContext context, snapshot){
+                if (snapshot.connectionState == ConnectionState.waiting){
+                  return const Center(
+                    child: CircularProgressIndicator()
+                    );
+                }
+                if (!snapshot.hasData){
+                  return const Center(
+                    child: Text(
+                      'No data to show',
+                      style: TextStyle(color: AppColors.TextColor),
+                    ),
+                  );
+                }
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: snapshot.data?.length,
+                  itemBuilder: (context, index){
+                    // mapData = {
+                    //   snapshot.data![index].category.toString(): double.parse(
+                    //     snapshot.data![index].amount.toString().replaceAll(".0", "").replaceAll(RegExp('[{}]'), ''),
+                    //   ),
+                    // };
+                    //return Text("red");
+                    return PieChart(
+                        dataMap:
+                        {
+                          "${snapshot.data![index].category}" : double.parse({snapshot.data![index].amount}.toString().replaceAllMapped(".0", (match) => "").
+                          replaceAll(RegExp('[{}]'), '')) ,}
+                        );
+                  }
+                );
+              }
+            ),
+            //PieChart(dataMap: mapData,),
             CategoryContainer
-
           ]
         ),
       )
@@ -121,6 +169,7 @@ Widget PieChartContainer(context) => Container(
     ),
   ),
 );
+
 
 //TODO Category Compiler
 Widget CategoryContainer = Container (
