@@ -51,12 +51,15 @@ class _CashFlowPage extends State<CashFlowPage> {
                   );
                 }
                 return ListView.builder(
+                  shrinkWrap: true,
                   itemCount: snapshot.data?.length,
                   itemBuilder: (context, index) {
                     return Text(
-                      "ID: ${snapshot.data![index].id} Note: ${snapshot.data![index].note}"
-                          "Date: ${snapshot.data![index].date}"
-                          "Amount: ${snapshot.data![index].amount} Category: ${snapshot.data![index].category}",
+                      "ID: ${snapshot.data![index].id} "
+                      "Note: ${snapshot.data![index].note}"
+                      "Date: ${snapshot.data![index].date}"
+                      "Amount: ${snapshot.data![index].amount} "
+                      "Category: ${snapshot.data![index].category}",
                     );
                   },
                 );
