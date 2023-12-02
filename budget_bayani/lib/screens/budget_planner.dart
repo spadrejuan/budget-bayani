@@ -16,19 +16,14 @@ class BudgetPlanner extends StatefulWidget {
   State<BudgetPlanner> createState() => _BudgetPlannerState();
 }
 class _BudgetPlannerState extends State<BudgetPlanner> {
-  late List<Map<String,dynamic>> limits;
-  _loadLimits() async {
-    limits = await db.retrieveLimits();
-    print(limits);
-    setState(() {
-    });
-  }
   late DBHelper db;
   @override
   void initState(){
     super.initState();
     db = DBHelper();
-    _loadLimits();
+    db.initDB().whenComplete(() async {
+      setState(() {});
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -41,7 +36,7 @@ class _BudgetPlannerState extends State<BudgetPlanner> {
         backgroundColor: AppColors.PanelBGColor,
       ),
       body: FutureBuilder(
-        future: db.retrieveDailyExpenses(),
+        future: db.retrieveLimitByThreshold('Daily'),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting){
             return const Center(
@@ -63,7 +58,7 @@ class _BudgetPlannerState extends State<BudgetPlanner> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                      SizedBox(height: 50.0),
+                      const SizedBox(height: 50.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -75,12 +70,12 @@ class _BudgetPlannerState extends State<BudgetPlanner> {
                             ),
                         ],
                       ),
-                      SizedBox(height: 10.0),
+                      const SizedBox(height: 10.0),
                       Row(
                         children: [
                           Expanded(
                           child: Container(
-                          margin: EdgeInsets.only(left: 40.0),
+                          margin: const EdgeInsets.only(left: 40.0),
                           child: const Text(
                           'Daily Budget',
                           style: TextStyle(
@@ -92,10 +87,10 @@ class _BudgetPlannerState extends State<BudgetPlanner> {
                           ),
                           // Add Spacer to push IconButton to the right
                           Container(
-                          margin: EdgeInsets.only(right: 30.0),
+                          margin: const EdgeInsets.only(right: 30.0),
                           child: IconButton(
                           onPressed: () async {
-                          await db.deleteLimitByThreshold('Daily');
+                          await db.deleteLimit(snapshot.data![index].limitId!);
                           setState(() {});
                           },
                           icon: const Icon(Icons.delete),
@@ -105,7 +100,7 @@ class _BudgetPlannerState extends State<BudgetPlanner> {
                           ], // Add a comma to separate the Expanded widget from the next widget
                           ),
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 40.0, vertical: 8.0),
+                      margin: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 8.0),
                       width: double.infinity,
                       height: 10.0,
                       child: Progresso(
@@ -115,19 +110,19 @@ class _BudgetPlannerState extends State<BudgetPlanner> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 40.0),
+                      margin: const EdgeInsets.symmetric(horizontal: 40.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                           Text(
-                            'Php. ${snapshot.data![index].amount}',
-                            style: TextStyle(
+                          Text(
+                            'Php. ${snapshot.data![index].limitAmount}',
+                            style: const TextStyle(
                               color: AppColors.TextColor,
                             ),
                           ),
-                          Text(
-                            ' of }spent',
-                            style: const TextStyle(
+                          const Text(
+                            ' of limit spent',
+                            style: TextStyle(
                               color: AppColors.TextColor,
                             ),
                           ),
