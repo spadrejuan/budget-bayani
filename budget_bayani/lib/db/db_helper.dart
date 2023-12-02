@@ -41,6 +41,7 @@ class DBHelper {
         await createTables(database);
       },
       version: 1,
+      onConfigure: _onConfigure,
     );
   }
   Future<int> insertExpense(Expenses expense) async{
@@ -58,6 +59,9 @@ class DBHelper {
   Future<List<Incomes>> retrieveIncomes() async {
     final List<Map<String, Object?>> queryResult = await db.query('incomes');
     return queryResult.map((e) => Incomes.fromMap(e)).toList();
+  }
+  Future <List<Map<String, dynamic>>> retrieveIncomeCategories() async {
+    return await db.rawQuery('SELECT * FROM incomes GROUP BY income_category');
   }
 
   Future<int> insertGoal(Goal goal) async {

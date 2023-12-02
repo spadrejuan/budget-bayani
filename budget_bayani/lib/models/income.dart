@@ -58,7 +58,7 @@ class Incomes extends dbObject{
         _amount = map["income_amount"],
         _category = map["income_category"],
         _note = map["income_note"];
-
+  
    @override
   String toString(){
     return 'Income{incomeId: $id, incomeDate: $date, incomeAmount: $amount, incomeCategory: $category, '
