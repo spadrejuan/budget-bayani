@@ -298,6 +298,7 @@ Widget DailyLogs(category, note, amount, textColor) => Container(
       // Category
       Container(
         margin: EdgeInsets.only(left: 16.0),
+        width:50,
         child: Text(
           category.toString().replaceAll(RegExp('[{}]'), ''),
           style: TextStyle(
