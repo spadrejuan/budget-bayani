@@ -4,6 +4,7 @@ import 'package:budget_bayani/components/app_color.dart';
 import 'package:budget_bayani/components/menu_bar.dart';
 import 'package:intl/intl.dart';
 import '../db/db_helper.dart';
+import '../models/expense.dart';
 import '../models/income.dart';
 import 'add_entries_2.dart';
 class CashFlowPage extends StatefulWidget {
@@ -12,6 +13,9 @@ class CashFlowPage extends StatefulWidget {
 }
 class _CashFlowPage extends State<CashFlowPage> {
   late DBHelper db;
+  double monthlyNet = 0;
+  double monthlyIncome = 0;
+  double monthlyExpense = 0;
   @override
   void initState(){
     super.initState();
@@ -23,9 +27,6 @@ class _CashFlowPage extends State<CashFlowPage> {
 
   @override
   Widget build(BuildContext context) {
-    double monthlyIncome = 0;
-    double monthlyExpense = 0;
-    double monthlyNet = 0;
     return Scaffold(
       appBar: AppBar(
         title: Text('CashFlowPage'),
@@ -85,14 +86,12 @@ class _CashFlowPage extends State<CashFlowPage> {
                     double totalExpenses = 0;
                     if (data is Incomes) {
                       totalIncome += data.amount;
-                    } else {
+                    }
+                    if(data is Expenses){
                       totalExpenses += data.amount;
                     }
-                    //For total per Month
-                    int currentMonth = currentDate.month;
-                    int prevMonth = currentDate.month -1;
-                    bool isMonthChanged = currentMonth != prevMonth;
-                    monthlyNet = monthlyIncome - monthlyExpense;
+                    print(totalExpenses);
+
                     return Container(
                       child: Column(
                         children: [
@@ -169,9 +168,10 @@ class _CashFlowPage extends State<CashFlowPage> {
       ),
     );
   }
+
+
+
 }
-
-
 //TODO Header na Month and year
 //Baka sa appbar na rin ilalagay
 Widget MonthYear = Container(
