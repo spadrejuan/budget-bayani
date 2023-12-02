@@ -1,4 +1,5 @@
 import 'package:budget_bayani/components/menu_bar.dart';
+import 'package:budget_bayani/screens/landing_page_income.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_bayani/components/app_color.dart';
 import 'package:pie_chart/pie_chart.dart';
@@ -28,6 +29,7 @@ class _LandingPageState extends State<LandingPage> {
   // Map<String, double> mapData= {};
   late DashboardViews selectedDashboardView;
   @override
+  bool isIncome = false;
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.BGColor,
@@ -40,8 +42,50 @@ class _LandingPageState extends State<LandingPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            IncomeExpenseSelector,
-            //PieChartContainer(context),
+            IncomeExpenseSelector(context),
+            //Piechart
+            FutureBuilder(
+                future: db.retrieveExpenses(),
+                builder: (BuildContext context, snapshot){
+                  if (snapshot.connectionState == ConnectionState.waiting){
+                    return const Center(
+                        child: CircularProgressIndicator()
+                    );
+                  }
+                  if (!snapshot.hasData){
+                    return const Center(
+                      child: Text(
+                        'No data to show',
+                        style: TextStyle(color: AppColors.TextColor),
+                      ),
+                    );
+                  }
+                  Map<String, double> data = {};
+                  return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data?.length,
+                      itemBuilder: (context, index){
+                        String category = snapshot.data![index].category;
+                        double amount = snapshot.data![index].amount.toDouble();
+                        data.update(category, (existingValue) => existingValue + amount, ifAbsent: () => amount);
+
+                        return Container (
+                            child: (snapshot.data?.length != null && index == snapshot.data!.length -1) ?
+                            PieChart(
+                              dataMap: data,
+                              chartValuesOptions: ChartValuesOptions(
+                                  showChartValues: false
+                              ),
+                              // legendOptions: LegendOptions(
+                              //   showLegends: false,
+                              // ),
+                            )
+                                :SizedBox());
+                      }
+                  );
+                }
+            ),
+            //Categories
             FutureBuilder(
               future: db.retrieveExpenses(),
               builder: (BuildContext context, snapshot){
@@ -58,28 +102,170 @@ class _LandingPageState extends State<LandingPage> {
                     ),
                   );
                 }
+                Map<String, double> data = {};
                 return ListView.builder(
                   shrinkWrap: true,
                   itemCount: snapshot.data?.length,
                   itemBuilder: (context, index){
-                    // mapData = {
-                    //   snapshot.data![index].category.toString(): double.parse(
-                    //     snapshot.data![index].amount.toString().replaceAll(".0", "").replaceAll(RegExp('[{}]'), ''),
-                    //   ),
-                    // };
-                    //return Text("red");
-                    return PieChart(
-                        dataMap:
-                        {
-                          "${snapshot.data![index].category}" : double.parse({snapshot.data![index].amount}.toString().replaceAllMapped(".0", (match) => "").
-                          replaceAll(RegExp('[{}]'), '')) ,}
-                        );
+                    String category = snapshot.data![index].category;
+                    double amount = snapshot.data![index].amount.toDouble();
+                    data.update(category, (existingValue) => existingValue + amount, ifAbsent: () => amount);
+
+                    return Container (
+                      child: (snapshot.data?.length != null && index == snapshot.data!.length -1) ?
+                      Container (
+                        padding: EdgeInsets.only(top:8, bottom: 8),
+                        decoration: BoxDecoration(
+                            color: AppColors.PanelBGColor,
+                            border: Border(
+                              top: BorderSide(color: AppColors.StrokeColor, width:1.5),
+                              bottom: BorderSide(color: AppColors.StrokeColor, width:1.5),
+                            )
+                        ),
+                        child: Column(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 5), // Add top and bottom margin
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 40, // Adjust the width as needed
+                                    height: 20, // Adjust the height as needed
+                                    decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      borderRadius: BorderRadius.circular(8), // Adjust the radius as needed
+                                    ),
+                                  ),
+                                  SizedBox(width: 10), // Add some spacing between the box and the text
+                                  Text('Apple'),
+                                  Spacer(), // Takes up all available space between 'Apple' and the price
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 10), // Adjust the right padding as needed
+                                    child: Text('\$2.99'), // Replace this with your actual price
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              height: 1, // Adjust the thickness of the line as needed
+                              color: Color(0xFF273F4B), // Use the specified color
+                            ),
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 5), // Add top and bottom margin
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                      color: Colors.green, // Example color for other fruits
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text('Banana'),
+                                  Spacer(),
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 10),
+                                    child: Text('\$1.99'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              height: 1,
+                              color: Color(0xFF273F4B),
+                            ),
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 5), // Add top and bottom margin
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                      color: Colors.orange, // Example color for other fruits
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text('Orange'),
+                                  Spacer(),
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 10),
+                                    child: Text('\$0.99'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              height: 1,
+                              color: Color(0xFF273F4B),
+                            ),
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 5), // Add top and bottom margin
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                      color: Colors.purple, // Example color for other fruits
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text('Grapes'),
+                                  Spacer(),
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 10),
+                                    child: Text('\$3.49'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              height: 1,
+                              color: Color(0xFF273F4B),
+                            ),
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 5), // Add top and bottom margin
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                      color: Colors.yellow, // Example color for other fruits
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text('Pineapple'),
+                                  Spacer(),
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 10),
+                                    child: Text('\$4.99'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              height: 1,
+                              color: Color(0xFF273F4B),
+                            ),
+                            // Add more fruit rows as needed
+                            // ...
+                          ],
+                        ),
+
+                      )
+                    :SizedBox());
                   }
                 );
               }
             ),
-            //PieChart(dataMap: mapData,),
-            CategoryContainer
+            // CategoryContainer
           ]
         ),
       )
@@ -89,7 +275,7 @@ class _LandingPageState extends State<LandingPage> {
 
 //TODO Clean Up
 //TODO Income/Expense Highlight when focused
-Widget IncomeExpenseSelector = Container (
+Widget IncomeExpenseSelector(context) => Container (
     padding: EdgeInsets.only(top:15, bottom: 15),
     decoration: BoxDecoration(
         color: AppColors.PanelBGColor,
@@ -106,7 +292,10 @@ Widget IncomeExpenseSelector = Container (
         child: Center(
           child: InkWell(
             onTap: (){
-              //TODO doSomething
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LandingPage2()),
+              );
             },
             child: const Text(
               'Income',
@@ -123,7 +312,7 @@ Widget IncomeExpenseSelector = Container (
         flex: 1,
         child: InkWell(
           onTap: () {
-            //TODO doSomething
+
           },
           child: const Center(
               child: Text(
@@ -139,35 +328,6 @@ Widget IncomeExpenseSelector = Container (
       ),
     ]
   )
-);
-
-//TODO Retrieve actual Data
-Widget PieChartContainer(context) => Container(
-  padding: EdgeInsets.only(top:25, bottom: 25),
-  margin: EdgeInsets.only(bottom: 5),
-  decoration: BoxDecoration(
-      color: AppColors.PanelBGColor,
-      border: Border(
-        top: BorderSide(color: AppColors.StrokeColor, width:1.5),
-        bottom: BorderSide(color: AppColors.StrokeColor, width:1.5),
-      )
-  ),
-  child: PieChart(
-    dataMap: {
-      'Apples': 10,
-      'Bananas': 15,
-      'Oranges': 20,
-    },
-    chartType: ChartType.disc,
-    animationDuration: Duration(seconds: 1),
-    chartRadius: MediaQuery.of(context).size.width / 3,
-    legendOptions: LegendOptions(
-      showLegends: false,
-    ),
-    chartValuesOptions: ChartValuesOptions(
-      showChartValues: false
-    ),
-  ),
 );
 
 
@@ -322,3 +482,31 @@ Widget CategoryContainer = Container (
 
 //TODO Category Builder
 Widget CategoryBuilder = Container();
+
+Widget PieChartContainer(context) => Container(
+  padding: EdgeInsets.only(top:25, bottom: 25),
+  margin: EdgeInsets.only(bottom: 5),
+  decoration: BoxDecoration(
+      color: AppColors.PanelBGColor,
+      border: Border(
+        top: BorderSide(color: AppColors.StrokeColor, width:1.5),
+        bottom: BorderSide(color: AppColors.StrokeColor, width:1.5),
+      )
+  ),
+  child: PieChart(
+    dataMap: {
+      'Apples': 10,
+      'Bananas': 15,
+      'Oranges': 20,
+    },
+    chartType: ChartType.disc,
+    animationDuration: Duration(seconds: 1),
+    chartRadius: MediaQuery.of(context).size.width / 3,
+    legendOptions: LegendOptions(
+      showLegends: false,
+    ),
+    chartValuesOptions: ChartValuesOptions(
+        showChartValues: false
+    ),
+  ),
+);

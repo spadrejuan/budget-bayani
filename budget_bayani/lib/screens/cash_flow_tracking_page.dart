@@ -107,53 +107,6 @@ class _CashFlowPage extends State<CashFlowPage> {
                     );
                   },
                 );
-                // return FutureBuilder(
-                //   future: db.retrieveExpenses(),
-                //   builder: (BuildContext context, expenseSnap) {
-                //     if (incomeSnap.connectionState == ConnectionState.waiting){
-                //       return const Center(
-                //         child: CircularProgressIndicator()
-                //       );
-                //     }
-                //     if (!incomeSnap.hasData){
-                //       return const Center(
-                //         child: Text(
-                //           'No data to show',
-                //           style: TextStyle(color: AppColors.TextColor),
-                //         ),
-                //     );
-                //     }
-                //     return  ListView.builder(
-                //       shrinkWrap: true,
-                //       itemCount: ((incomeSnap.data?.length ?? 0) > (expenseSnap.data?.length ?? 0)) ? incomeSnap.data?.length ?? 0 : expenseSnap.data?.length ?? 0,
-                //       itemBuilder: (context, index){
-                //         return Container(
-                //             child: Column(
-                //                 children: [
-                //                   if(index>=0 && index< incomeSnap.data!.length)
-                //                     DailyLogs({incomeSnap.data?[index].date}, {incomeSnap.data?[index].note}, {incomeSnap.data?[index].amount}),
-                //                   if(index>=0 && index< expenseSnap.data!.length)
-                //                     DailyLogs({expenseSnap.data?[index].date}, {expenseSnap.data?[index].note}, {expenseSnap.data?[index].amount}),
-                //           ])
-                //         );
-                //       },
-                //     );
-                //   }
-                // );
-
-                // return ListView.builder(
-                //   shrinkWrap: true,
-                //   itemCount: snapshot.data?.length,
-                //   itemBuilder: (context, index) {
-                //     return Text(
-                //       "ID: ${snapshot.data![index].id} "
-                //       "Note: ${snapshot.data![index].note}"
-                //       "Date: ${snapshot.data![index].date}"
-                //       "Amount: ${snapshot.data![index].amount} "
-                //       "Category: ${snapshot.data![index].category}",
-                //     );
-                //   },
-                // );
               },
             ),
           ],
