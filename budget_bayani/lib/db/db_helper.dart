@@ -124,12 +124,12 @@ class DBHelper {
     return await db.rawQuery('SELECT * FROM limits GROUP BY limit_threshold');
   }
   Future<List<Goal>> retrieveExistingGoals() async {
-    final List<Map<String, Object?>> queryResult = await db.rawQuery('SELECT * FROM goals WHERE goal_end > ?',
+    final List<Map<String, Object?>> queryResult = await db.rawQuery('SELECT * FROM goals WHERE goal_end < ?',
         [DateFormat.yMMMd().format(DateTime.now())]);
     return queryResult.map((e) => Goal.fromMap(e)).toList();
   }
   Future<List<Goal>> retrieveExpiredGoals() async {
-    final List<Map<String, Object?>> queryResult = await db.rawQuery('SELECT * FROM goals WHERE goal_end < ?',
+    final List<Map<String, Object?>> queryResult = await db.rawQuery('SELECT * FROM goals WHERE goal_end > ?',
         [DateFormat.yMMMd().format(DateTime.now())]);
     return queryResult.map((e) => Goal.fromMap(e)).toList();
   }
