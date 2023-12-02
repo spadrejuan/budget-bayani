@@ -65,11 +65,14 @@ class _CashFlowPage extends State<CashFlowPage> {
                   combinedList.addAll(snapshot.data![1]);
                 }
                 combinedList.sort((a, b) => b.date.compareTo(a.date));
+                double totalIncome = 0;
+                double totalExpenses = 0;
                 return ListView.builder(
                   shrinkWrap: true,
                   itemCount: combinedList.length,
                   itemBuilder: (context, index){
                     var data = combinedList[index];
+                    print(data);
                     //Color Change
                     Color textColor = data is Incomes ? AppColors.IncomeColor : AppColors.ExpenseColor;
                     //For date grouping
@@ -82,15 +85,16 @@ class _CashFlowPage extends State<CashFlowPage> {
                         : null;
                     bool isDateChanged = currentDateWithoutTime != previousDateWithoutTime;
                     //For total per day
-                    double totalIncome = 0;
-                    double totalExpenses = 0;
-                    if (data is Incomes) {
+                    if(isDateChanged){
+                      totalExpenses = 0;
+                      totalIncome = 0;
+                    }
+                    if(data is Incomes) {
                       totalIncome += data.amount;
                     }
                     if(data is Expenses){
                       totalExpenses += data.amount;
                     }
-                    print(totalExpenses);
 
                     return Container(
                       child: Column(
@@ -361,7 +365,7 @@ Widget DailyLogs(category, note, amount, textColor) => Container(
       //Amount
       Container(
         child: Text(
-          "₱ "+amount.toString().replaceAll(RegExp('[{}]'), ''),
+          "₱ ${amount.toString().replaceAll(RegExp('[{}]'), '')}",
           style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.normal,
