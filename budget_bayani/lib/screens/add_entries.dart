@@ -2,7 +2,7 @@ import 'package:budget_bayani/screens/cash_flow_tracking_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:budget_bayani/db/db_helper.dart';
-import 'package:budget_bayani/components/AppColor.dart';
+import 'package:budget_bayani/components/app_color.dart';
 import '../models/expense.dart';
 import 'add_entries_2.dart';
 class AddEntries extends StatelessWidget {

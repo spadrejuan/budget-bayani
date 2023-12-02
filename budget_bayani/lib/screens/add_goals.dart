@@ -2,8 +2,7 @@ import 'package:budget_bayani/db/db_helper.dart';
 import 'package:budget_bayani/screens/financial_goals.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../components/AppColor.dart';
-import '../components/menu_bar.dart';
+import '../components/app_color.dart';
 import '../models/goals.dart';
 class AddGoal extends StatelessWidget {
   const AddGoal({super.key});
@@ -55,7 +54,6 @@ class _AddGoalFormState extends State<AddGoalForm> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: AppColors.BGColor,
-        drawer: SideMenuBar(),
         appBar: AppBar(
           centerTitle: true,
           title: const Text('Add Financial Goals'),

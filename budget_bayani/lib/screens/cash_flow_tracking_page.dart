@@ -1,6 +1,6 @@
 import 'package:budget_bayani/screens/add_entries.dart';
 import 'package:flutter/material.dart';
-import 'package:budget_bayani/components/AppColor.dart';
+import 'package:budget_bayani/components/app_color.dart';
 import 'package:budget_bayani/components/menu_bar.dart';
 import '../db/db_helper.dart';
 import 'add_entries_2.dart';

@@ -2,7 +2,7 @@ import 'package:budget_bayani/screens/cash_flow_tracking_page.dart';
 import 'package:budget_bayani/components/menu_bar.dart';
 import 'package:budget_bayani/screens/landing_page.dart';
 import 'package:flutter/material.dart';
-import 'package:budget_bayani/components/AppColor.dart';
+import 'package:budget_bayani/components/app_color.dart';
 
 void main() {
   runApp(const MyApp());
