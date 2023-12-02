@@ -39,7 +39,56 @@ class _CashFlowPage extends State<CashFlowPage> {
         child: Column (
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            MonthlySummary(monthlyIncome, monthlyExpense, monthlyNet),
+            // MonthlySummary(monthlyIncome, monthlyExpense, monthlyNet),
+            FutureBuilder(
+              future: Future.wait([db.retrieveIncomes(), db.retrieveExpenses()]),
+              // builder: (BuildContext context, incomeSnap) {
+              builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot){
+                if (snapshot.connectionState == ConnectionState.waiting){
+                  return const Center(
+                      child: CircularProgressIndicator()
+                  );
+                }
+                if (!snapshot.hasData){
+                  return const Center(
+                    child: Text(
+                      'No data to show',
+                      style: TextStyle(color: AppColors.TextColor),
+                    ),
+                  );
+                }
+                List<dynamic> combinedList = [];
+                if (snapshot.data![0] != null) {
+                  combinedList.addAll(snapshot.data![0]);
+                }
+                if (snapshot.data![1] != null) {
+                  combinedList.addAll(snapshot.data![1]);
+                }
+                combinedList.sort((a, b) => b.date.compareTo(a.date));
+                double totalIncome = 0;
+                double totalExpenses = 0;
+                double netTotal = 0;
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: combinedList.length,
+                  itemBuilder: (context, index){
+                    var data = combinedList[index];
+
+                    if(data is Incomes) {
+                      totalIncome += data.amount;
+                    } else {
+                      totalExpenses += data.amount;
+                    }
+                    netTotal = totalIncome - totalExpenses;
+
+                    return Container (
+                        child: (combinedList.length != null && index == combinedList.length -1) ?
+                        MonthlySummary(totalIncome, totalExpenses, netTotal) :SizedBox()
+                    );
+                  },
+                );
+              },
+            ),
             FutureBuilder(
               future: Future.wait([db.retrieveIncomes(), db.retrieveExpenses()]),
               // builder: (BuildContext context, incomeSnap) {
@@ -95,9 +144,7 @@ class _CashFlowPage extends State<CashFlowPage> {
                     if(data is Expenses){
                       totalExpenses += data.amount;
                     }
-
                     return Container(
-
                       child: Column(
                         children: [
                           // if (isMonthChanged) MonthlySummary(monthlyIncome, monthlyExpense, monthlyNet),
@@ -163,7 +210,7 @@ Widget MonthlySummary(Income, Expense, Total) => Container(
             ),
           ),
           Text(
-            Income.toString(),
+            '₱' + Income.toString(),
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.normal,
@@ -184,7 +231,7 @@ Widget MonthlySummary(Income, Expense, Total) => Container(
               ),
             ),
             Text(
-              Expense.toString(),
+              '₱' + Expense.toString(),
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.normal,
@@ -205,7 +252,7 @@ Widget MonthlySummary(Income, Expense, Total) => Container(
               ),
             ),
             Text(
-              Total.toString(), //retrieve from db
+              '₱' + Total.toString(), //retrieve from db
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.normal,
@@ -251,7 +298,7 @@ Widget DailyDates(date, Income, Expenses) => Container(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(
-              Income.toString(), // retrieve from db
+              '₱' + Income.toString(), // retrieve from db
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.normal,
@@ -267,7 +314,7 @@ Widget DailyDates(date, Income, Expenses) => Container(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Text(
-            Expenses.toString(), // retrieve from db
+            '₱' + Expenses.toString(), // retrieve from db
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.normal,
