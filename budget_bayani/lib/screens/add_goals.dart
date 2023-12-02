@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../components/app_color.dart';
 import '../models/goals.dart';
+import '../models/income.dart';
 class AddGoal extends StatelessWidget {
   const AddGoal({super.key});
   @override
@@ -25,25 +26,28 @@ class _AddGoalFormState extends State<AddGoalForm> {
   TextEditingController goalEnd = TextEditingController();
   TextEditingController goalName = TextEditingController();
   TextEditingController goalAmount = TextEditingController();
-  List<String> sampleCategory = ['Salary', 'Saving'];
-  String _selectedCategory = 'Salary';
-  late Goal _goal;
   late DBHelper db;
+  late List<Map<String,dynamic>> categories;
+  late String selectedCategory;
+  _loadList() async{
+    categories = await db.retrieveIncomeCategories();
+    selectedCategory = categories[0]['income_category'];
+    setState(() {
+    });
+  }
   @override
   void initState(){
     super.initState();
     db = DBHelper();
-    goalEnd.text = "";
-    db.initDB().whenComplete(() async {
-      setState(() {});
-    });
+    _loadList();
   }
+
   Future<void> addGoal() async{
     String name = goalName.text;
-    String start = DateTime.now().toIso8601String();
-    String end = DateTime.parse(goalEnd.text).toIso8601String();
+    String start = DateFormat.yMMMd().format(DateTime.now());
+    String end = DateFormat.yMMMd().format(DateTime.parse(goalEnd.text));
     double amount = double.parse(goalAmount.text);
-    String incomeCategory = _selectedCategory;
+    String incomeCategory = selectedCategory;
     Goal goal = Goal (goalName: name, goalStart: start, goalEnd: end, goalAmount: amount, incomeCategory: incomeCategory);
     await insertGoal(goal);
   }
@@ -151,20 +155,19 @@ class _AddGoalFormState extends State<AddGoalForm> {
                     return null;
                   },
                 ),
-                DropdownButton(
-                  style: const TextStyle(color: AppColors.TextColor),
-                  value: _selectedCategory,
-                  items: sampleCategory.map((String val){
-                    return DropdownMenuItem(
-                      value: val,
-                      child: Text(
-                          val
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (value){
+                DropdownButton<String>(
+                    value: selectedCategory==""? 'Others': selectedCategory,
+                    hint: const Text('Pick category'),
+                    items: categories?.map<DropdownMenuItem<String>>((Map<String, dynamic> val){
+                      return DropdownMenuItem(
+                        value: val['income_category'],
+                        child: Text(val['income_category']),
+                      );
+                    })?.toList()??[],
+                  onChanged: (newVal) async {
+                    print(newVal);
                     setState(() {
-                      _selectedCategory = value!;
+                      selectedCategory=newVal!;
                     });
                   },
                 ),

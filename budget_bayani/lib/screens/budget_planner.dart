@@ -35,35 +35,312 @@ class _BudgetPlannerState extends State<BudgetPlanner> {
         title: const Text('Budget Planner'),
         backgroundColor: AppColors.PanelBGColor,
       ),
-      body: FutureBuilder(
-        future: db.retrieveLimit(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting){
-            return const Center(
-                child: CircularProgressIndicator()
-            );
-          }
-          if (!snapshot.hasData){
-            return const Center(
-              child: Text(
-                'No data to show',
-                style: TextStyle(color: AppColors.TextColor),
-              ),
-            );
-          }
-          return ListView.builder(
-            itemCount: snapshot.data?.length,
-            itemBuilder: (context, index){
-              return Center(
-                child: Text(
-                  'ID: ' + snapshot.data![index].limitId.toString() +
-                      "Amount: " + snapshot.data![index].limitAmount.toString() +
-                      "Threshold: " + snapshot.data![index].limitThreshold,
-                ),
+      body: Column(
+        children: [
+          FutureBuilder(
+            future: db.retrieveLimitByThreshold('Daily'),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting){
+                return const Center(
+                    child: CircularProgressIndicator()
+                );
+              }
+              if (!snapshot.hasData){
+                return const Center(
+                  child: Text(
+                    'No daily limit set to show',
+                    style: TextStyle(color: AppColors.TextColor),
+                  ),
+                );
+              }
+              return ListView.builder(
+                itemCount: snapshot.data?.length,
+                itemBuilder: (context, index){
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                          const SizedBox(height: 50.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                                Text(
+                                DateFormat.yMMMd().format(DateTime.now()),
+                                style: const TextStyle(
+                                color: AppColors.TextColor,
+                                        ),
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 10.0),
+                          Row(
+                            children: [
+                              Expanded(
+                              child: Container(
+                              margin: const EdgeInsets.only(left: 40.0),
+                              child: const Text(
+                              'Daily Budget',
+                              style: TextStyle(
+                              color: AppColors.TextColor,
+                              fontSize: 25,
+                              ),
+                              ),
+                              ),
+                              ),
+                              // Add Spacer to push IconButton to the right
+                              Container(
+                              margin: const EdgeInsets.only(right: 30.0),
+                              child: IconButton(
+                              onPressed: () async {
+                              await db.deleteLimit(snapshot.data![index].limitId!);
+                              setState(() {});
+                              },
+                              icon: const Icon(Icons.delete),
+                              color: Colors.red,
+                              ),
+                              ),
+                              ], // Add a comma to separate the Expanded widget from the next widget
+                              ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 8.0),
+                          width: double.infinity,
+                          height: 10.0,
+                          child: Progresso(
+                            progress: 0.5,
+                            backgroundColor: AppColors.Stroke2Color,
+                            progressColor: Colors.redAccent,
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 40.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Php. ${snapshot.data![index].limitAmount}',
+                                style: const TextStyle(
+                                  color: AppColors.TextColor,
+                                ),
+                              ),
+                              const Text(
+                                ' of limit spent',
+                                style: TextStyle(
+                                  color: AppColors.TextColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
               );
             },
-          );
-        },
+          ),
+          FutureBuilder(
+            future: db.retrieveLimitByThreshold('Weekly'),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting){
+                return const Center(
+                    child: CircularProgressIndicator()
+                );
+              }
+              if (!snapshot.hasData){
+                return const Center(
+                  child: Text(
+                    'No weekly limit set to show',
+                    style: TextStyle(color: AppColors.TextColor),
+                  ),
+                );
+              }
+              return ListView.builder(
+                itemCount: snapshot.data?.length,
+                itemBuilder: (context, index){
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 50.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              DateFormat.yMMMd().format(DateTime.now()),
+                              style: const TextStyle(
+                                color: AppColors.TextColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10.0),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                margin: const EdgeInsets.only(left: 40.0),
+                                child: const Text(
+                                  'Weekly Budget',
+                                  style: TextStyle(
+                                    color: AppColors.TextColor,
+                                    fontSize: 25,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            // Add Spacer to push IconButton to the right
+                            Container(
+                              margin: const EdgeInsets.only(right: 30.0),
+                              child: IconButton(
+                                onPressed: () async {
+                                  await db.deleteLimit(snapshot.data![index].limitId!);
+                                  setState(() {});
+                                },
+                                icon: const Icon(Icons.delete),
+                                color: Colors.red,
+                              ),
+                            ),
+                          ], // Add a comma to separate the Expanded widget from the next widget
+                        ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 8.0),
+                          width: double.infinity,
+                          height: 10.0,
+                          child: Progresso(
+                            progress: 0.5,
+                            backgroundColor: AppColors.Stroke2Color,
+                            progressColor: Colors.redAccent,
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 40.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Php. ${snapshot.data![index].limitAmount}',
+                                style: const TextStyle(
+                                  color: AppColors.TextColor,
+                                ),
+                              ),
+                              const Text(
+                                ' of limit spent',
+                                style: TextStyle(
+                                  color: AppColors.TextColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+          FutureBuilder(
+            future: db.retrieveLimitByThreshold('Monthly'),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting){
+                return const Center(
+                    child: CircularProgressIndicator()
+                );
+              }
+              if (!snapshot.hasData){
+                return const Center(
+                  child: Text(
+                    'No monthly limit set to show',
+                    style: TextStyle(color: AppColors.TextColor),
+                  ),
+                );
+              }
+              return ListView.builder(
+                itemCount: snapshot.data?.length,
+                itemBuilder: (context, index){
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 50.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              DateFormat.yMMMd().format(DateTime.now()),
+                              style: const TextStyle(
+                                color: AppColors.TextColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10.0),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                margin: const EdgeInsets.only(left: 40.0),
+                                child: const Text(
+                                  'Monthly Budget',
+                                  style: TextStyle(
+                                    color: AppColors.TextColor,
+                                    fontSize: 25,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            // Add Spacer to push IconButton to the right
+                            Container(
+                              margin: const EdgeInsets.only(right: 30.0),
+                              child: IconButton(
+                                onPressed: () async {
+                                  await db.deleteLimit(snapshot.data![index].limitId!);
+                                  setState(() {});
+                                },
+                                icon: const Icon(Icons.delete),
+                                color: Colors.red,
+                              ),
+                            ),
+                          ], // Add a comma to separate the Expanded widget from the next widget
+                        ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 8.0),
+                          width: double.infinity,
+                          height: 10.0,
+                          child: Progresso(
+                            progress: 0.5,
+                            backgroundColor: AppColors.Stroke2Color,
+                            progressColor: Colors.redAccent,
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 40.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Php. ${snapshot.data![index].limitAmount}',
+                                style: const TextStyle(
+                                  color: AppColors.TextColor,
+                                ),
+                              ),
+                              const Text(
+                                ' of limit spent',
+                                style: TextStyle(
+                                  color: AppColors.TextColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
       bottomSheet: Container(
         color: const Color(0xff121B1F),

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:budget_bayani/models/limits.dart';
 import 'package:budget_bayani/models/expense.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 import '../models/goals.dart';
 import 'package:path/path.dart';
@@ -41,6 +42,7 @@ class DBHelper {
         await createTables(database);
       },
       version: 1,
+      onConfigure: _onConfigure,
     );
   }
   Future<int> insertExpense(Expenses expense) async{
@@ -58,6 +60,9 @@ class DBHelper {
   Future<List<Incomes>> retrieveIncomes() async {
     final List<Map<String, Object?>> queryResult = await db.query('incomes');
     return queryResult.map((e) => Incomes.fromMap(e)).toList();
+  }
+  Future <List<Map<String, dynamic>>> retrieveIncomeCategories() async {
+    return await db.rawQuery('SELECT * FROM incomes GROUP BY income_category');
   }
 
   Future<int> insertGoal(Goal goal) async {
@@ -97,6 +102,36 @@ class DBHelper {
   }
   Future<void> deleteLimitByThreshold(String string) async {
     await db.delete('limits', where: 'limit_threshold=?', whereArgs: [string]);
-}
+  }
+  Future<List<Expenses>> retrieveDailyExpenses() async {
+    final List<Map<String, Object?>> queryResult = await db.rawQuery('SELECT * FROM expenses WHERE (expense_date <=?'
+        'and expense_date >=?)', [DateTime.now().toIso8601String(), DateTime.now().subtract(const Duration(days: 1)).toIso8601String()]);
+    return queryResult.map((e) => Expenses.fromMap(e)).toList();
+  }
+
+  Future<List<Expenses>> retrieveWeeklyExpenses() async {
+    final List<Map<String, Object?>> queryResult = await db.rawQuery('SELECT * FROM expenses WHERE (expense_date <=?'
+        'and expense_date >=?)', [DateTime.now().add(const Duration(days: 7)).toIso8601String(), DateTime.now().toIso8601String()]);
+    return queryResult.map((e) => Expenses.fromMap(e)).toList();
+  }
+
+  Future<List<Expenses>> retrieveMonthlyExpenses() async {
+    final List<Map<String, Object?>> queryResult = await db.rawQuery('SELECT * FROM expenses WHERE (expense_date <=?'
+        'and expense_date >=?)', [DateTime.now().add(const Duration(days: 30)).toIso8601String(), DateTime.now().toIso8601String()]);
+    return queryResult.map((e) => Expenses.fromMap(e)).toList();
+  }
+  Future <List<Map<String, dynamic>>> retrieveLimits() async {
+    return await db.rawQuery('SELECT * FROM limits GROUP BY limit_threshold');
+  }
+  Future<List<Goal>> retrieveExistingGoals() async {
+    final List<Map<String, Object?>> queryResult = await db.rawQuery('SELECT * FROM goals WHERE goal_end < ?',
+        [DateFormat.yMMMd().format(DateTime.now())]);
+    return queryResult.map((e) => Goal.fromMap(e)).toList();
+  }
+  Future<List<Goal>> retrieveExpiredGoals() async {
+    final List<Map<String, Object?>> queryResult = await db.rawQuery('SELECT * FROM goals WHERE goal_end > ?',
+        [DateFormat.yMMMd().format(DateTime.now())]);
+    return queryResult.map((e) => Goal.fromMap(e)).toList();
+  }
 
 }

@@ -42,9 +42,7 @@ class _OverviewGoalsState extends State<OverviewGoals> {
         ),
       ),
       body: FutureBuilder(
-        // TODO add method to query only finished goals
-        // TODO fix dates to output Month, Day, Year
-        future: db.retrieveGoals(),
+        future: db.retrieveExpiredGoals(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting){
             return const Center(
@@ -63,12 +61,16 @@ class _OverviewGoalsState extends State<OverviewGoals> {
             itemCount: snapshot.data?.length,
             itemBuilder: (context, index){
               return Center(
-                child: Stack(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    SizedBox(height: 50.0),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+
                         Text(
-                          snapshot.data![index].goalEnd,
+                          snapshot.data![index].goalStart,
                           style: const TextStyle(
                             color: AppColors.TextColor,
                           ),
@@ -88,50 +90,66 @@ class _OverviewGoalsState extends State<OverviewGoals> {
                         ),
                       ],
                     ),
-                    Text(
-                      snapshot.data![index].goalName,
-                      style: const TextStyle(
-                        color: AppColors.TextColor,
-                        fontSize: 15,
-                      ),
-                    ),
-                    Column(
-                      children: [
-                        IconButton(
-                          onPressed: () async {
-                            await db.deleteGoal(snapshot.data![index].goalId!);
-                            setState(() {
-                            });
-                          },
-                          icon: const Icon(
-                              Icons.delete
-                          ),
-                          color: Colors.red,
-                        ),
-                        Progresso(
-                          //TODO add value for progress bar using income category
-                          progress: 0.5,
-                          backgroundColor: AppColors.Stroke2Color,
-                          progressColor: Colors.redAccent,
-                        ),
-                      ],
-                    ),
+                    SizedBox(height: 10.0),
+                    // Add a SizedBox for spacing
                     Row(
                       children: [
-                        const Text(
-                          // TODO add values of added categories here
-                          'Php. 100',
-                          style: TextStyle(
-                            color: AppColors.TextColor,
+                        Expanded(
+                          child: Container(
+                            margin: EdgeInsets.only(left: 40.0),
+                            child: Text(
+                              snapshot.data![index].goalName,
+                              style: const TextStyle(
+                                color: AppColors.TextColor,
+                                fontSize: 25,
+                              ),
+                            ),
                           ),
                         ),
-                        Text(
-                          ' of ${snapshot.data![index].goalAmount}saved[${snapshot.data![index].incomeCategory}]',
-                          style: const TextStyle(
-                            color: AppColors.TextColor,
+                        // Add Spacer to push IconButton to the right
+                        Container(
+                          margin: EdgeInsets.only(right: 30.0),
+                          child: IconButton(
+                            onPressed: () async {
+                              await db.deleteGoal(snapshot.data![index].goalId!);
+                              setState(() {});
+                            },
+                            icon: const Icon(Icons.delete),
+                            color: Colors.red,
                           ),
                         ),
-                      ],
+                      ], // Add a comma to separate the Expanded widget from the next widget
+                    ),
+
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 40.0, vertical: 8.0),
+                      width: double.infinity,
+                      height: 10.0,
+                      child: Progresso(
+                        progress: 0.5,
+                        backgroundColor: AppColors.Stroke2Color,
+                        progressColor: Colors.redAccent,
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 40.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Php. 100',
+                            style: TextStyle(
+                              color: AppColors.TextColor,
+                            ),
+                          ),
+                          Text(
+                            ' of ${snapshot.data![index].goalAmount} saved[${snapshot.data![index].incomeCategory}]',
+                            style: const TextStyle(
+                              color: AppColors.TextColor,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
