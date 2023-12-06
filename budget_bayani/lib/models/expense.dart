@@ -1,5 +1,5 @@
 import 'package:budget_bayani/models/db_objects.dart';
-// uses Abstract Class dbObject for Abstraction
+// uses Abstract Class dbObject for Abstraction and Inheritance
 class Expenses extends dbObject{
   int? id;
   String _date;
